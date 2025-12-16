@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Graham Gilbert-Schroeer</title>
+
+    <style>
+        /* RESET */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* NAVBAR */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 1);
+            gap: 20px;
+
+            padding: 15px 0;
+            z-index: 1000;
+        }
+
+        .navigation a {
+            text-decoration: none;
+            color: black;
+            font-size: 1rem;
+            display: inline-flex;
+            /* Use flexbox for easy centering */
+            align-items: center;
+            /* Center vertically */
+            justify-content: center;
+            /* Center horizontally */
+            height: 2em;
+            /* Set equal height and width for a perfect circle */
+            width: 6em;
+            border: 2px solid black;
+            /* Add the border */
+            padding: 1px;
+            /* Add some space around the text */
+            text-align: center;
+            /* Fallback for centering */
+            transition: all 0.3s ease;
+        }
+
+        .navigation a:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        /* HERO / BACKGROUND */
+        .all-browsers {
+            background-image: url("../images/frontpage/FRONTPAGE_BACKGROUND.JPG");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            min-height: 100vh;
+            padding-top: 100px;
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 3rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+        }
+
+        h2 {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        p {
+            display: inline-flex;
+            align-items: center;
+            margin: 0;
+            font-size: 0.75rem;
+        }
+
+        .about-me-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            max-width: 400px;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navigation">
+        <span class="circle-text"><a href="frontpage.html">Home</a></span>
+        <span class="circle-text"><a href="projects.html">Projects</a></span>
+        <span class="circle-text"><a href="contact.html">Contact</a></span>
+    </nav>
+
+    <article class="all-browsers">
+        <h1>Graham Gilbert-Schroeer</h1>
+        <div class = "about-me-box">
+            <h2>About Me</h2>
+            <p>I am a first year Mechanical Engineering student at Northwestern University. </p>
+        </div>
+    </article>
+</body>
+
+</html>
