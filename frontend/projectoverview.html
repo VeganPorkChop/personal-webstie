@@ -6,19 +6,82 @@
     <title>Projects Overview</title>
     <style>
         .default-browser {
-            background-image: url("../images/projectoverview/PROJECTOVERVIEW_BACKGROUND.JPG");
+            background-image: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             transition: filter 0.4s ease;
+            min-height: 100vh;
         }
-        body:has(.navigation a:hover) .default-browsers {
-            filter: brightness(0.7) blur(2px);
+
+        h1 {
+            text-align: center;
+            padding-top: 50px;
+            color: white;
+            text-shadow: 2px 2px 4px #000000;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 40px 20px;
+            text-align: left;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 15px;
+            border: 2px solid white;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: black;
+        }
+
+        body:has(.p1:hover) .default-browser {
+            background-image: url(../images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.jpg);
+            background-position: fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        body:has(.p2:hover) .default-browser {
+            background-image: url(../images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg);
+            background-position: fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        body:has(.p3:hover) .default-browser {
+            background-image: url(../images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg);
+            background-position: fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        body:has(.p4:hover) .default-browser {
+            filter: blur(2px);
         }
     </style>
 </head>
 
 <body>
-    <h1>Projects Table of Contents</h1>
-    
+    <div class="default-browser">
+        <h1>Projects Table of Contents</h1>
+        <ul>
+            <li><a class="p1" href="Delta Arm.html">Delta Arm 1</a></li>
+            <li><a class="p2" href="Auto Ball Balancer.html">Auto Ball Balancer</a></li>
+            <li><a class="p3" href="Mishap D.html">Mishap D</a></li>
+            <li><a class="p4" href="Project 4.html">Project 4</a></li>
+        </ul>
+        
+    </div>
 </body>
