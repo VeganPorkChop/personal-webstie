@@ -13,3 +13,8 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+async function contactPage() {
+    try {
+        const response = await fetch('http://localhost:3000/contact.html');
+        method 
