@@ -61,8 +61,6 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-
-            min-height: 100vh;
             padding-top: 100px;
             color: white;
             text-align: center;
@@ -108,9 +106,9 @@
 <body>
 
     <nav class="navigation">
-        <span class="circle-text"><a href="frontpage.html">Home</a></span>
-        <span class="circle-text"><a href="projects.html">Projects</a></span>
-        <span class="circle-text"><a href="contact.html">Contact</a></span>
+        <span class="circle-text"><a id = "home" href="frontpage.html">Home</a></span>
+        <span class="circle-text"><a id = "projects" href="projects.html">Projects</a></span>
+        <span class="circle-text"><a id = "contact" href="contact.html">Contact</a></span>
     </nav>
 
     <article class="all-browsers">
@@ -120,6 +118,23 @@
             <p>I am a first year Mechanical Engineering student at Northwestern University. </p>
         </div>
     </article>
+
+    <script>
+        const navLinks = document.querySelectorAll("#home", "#projects", "#contact");
+        
+        if(navLinks.home)
+            navLinks.home.addEventListener("click", () => {
+                window.location.href = "frontpage.html";
+            });
+        if(navLinks.projects)
+            navLinks.projects.addEventListener("click", () => {
+                window.location.href = "projectoverview.html";
+            });
+        if(navLinks.contact)
+            navLinks.contact.addEventListener("click", () => {
+                window.location.href = "contact.html";
+            });
+    </script>
 </body>
 
 </html>
