@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Threaded Items Transfer System</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#e6ebef;
+      --border:#c6cad2;
+      --accent:#2563eb;
+
+      --code-bg:#0b1020;
+      --code-text:#e5e7eb;
+
+      --max: 980px;
+      --radius: 14px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.65;
+    }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    header{
+      text-align:center;
+      padding: 6px 0 18px;
+    }
+    header h1{
+      margin: 10px 0 6px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+    }
+    header p{
+      margin: 0 auto;
+      max-width: 85ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .pillbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top: 14px;
+    }
+    .pill{
+      font-size: 0.92rem;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    h2{
+      margin: 30px 0 10px;
+      font-size: 1.7rem;
+      letter-spacing: -0.01em;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 1.2rem;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .grid{ display:grid; gap: 14px; }
+    @media (min-width: 900px){
+      .grid.two{ grid-template-columns: 1fr 1fr; }
+    }
+
+    ul, ol{ margin: 8px 0 0 1.1rem; padding:0; }
+    li{ margin: 8px 0; }
+
+    .muted{ color: var(--muted); }
+
+    /* Tables */
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td{
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.98rem;
+    }
+    th{
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+    tr:last-child td{ border-bottom: none; }
+
+    /* Details / Code */
+    details{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+    details > summary{
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker{ display:none; }
+
+    details.code pre{
+      background: var(--code-bg);
+      color: var(--code-text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 10px 0 0;
+    }
+    pre code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      white-space: pre;
+      display: inline-block;
+      min-width: 100%;
+    }
+
+    .callout{
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin: 12px 0 0;
+    }
+
+    footer{
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Threaded Items Transfer System</h1>
+      <p>
+        A modular sorting system designed to reduce end-of-year lab cleanup time by mechanically separating mixed fasteners
+        (nuts, bolts, lock nuts, washers, and small hardware) into organized bins.
+      </p>
+
+      <div class="pillbar">
+        <div class="pill">Mechanical Sorting</div>
+        <div class="pill">Modular Design</div>
+        <div class="pill">Lab Organization</div>
+        <div class="pill">Reliability Focus</div>
+      </div>
+    </header>
+
+    <h2>Planning</h2>
+    <div class="card">
+      <h3>Problem</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Proposed Solution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              At the end of the school year, nuts, bolts, washers, and other small hardware are left unsorted and can take hours to organize.
+            </td>
+            <td>
+              Build a multi-stage machine that separates mixed hardware into labeled buckets with high accuracy and minimal jams.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Goal:</strong> Reduce manual sorting time while keeping the system simple to maintain and easy for future students to repair.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Requirements</h3>
+      <div class="grid two">
+        <div>
+          <h4>Essential</h4>
+          <ul>
+            <li>Sort between the main groups of materials in the lab.</li>
+            <li>Separate tiny hardware (small nuts/bolts), nuts (lock vs standard), washers, and screws/bolts.</li>
+            <li>Maintain consistent throughput with <strong>zero jams</strong> for essential categories.</li>
+            <li>Achieve <strong>≥ 90% accuracy</strong> for essential sorting.</li>
+            <li>Documentation must be complete enough for future repair and troubleshooting.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Non-Essential (Stretch)</h4>
+          <ul>
+            <li>Separate tiny nuts from tiny bolts.</li>
+            <li>Sort screws/bolts into sizes (M1, M2, M3, M4, etc.).</li>
+            <li>Increase accuracy across all stages beyond minimum requirements.</li>
+            <li>Connect modules to make the system fully automatic (no manual transfer between stages).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Success Statement</h3>
+      <ul>
+        <li><strong>Accuracy:</strong> At least 90% correct sorting for essential categories.</li>
+        <li><strong>Reliability:</strong> Zero jams during essential sorting runs.</li>
+        <li><strong>Maintainability:</strong> Documentation enables any future student to diagnose and fix failures.</li>
+      </ul>
+    </div>
+
+    <h2>Concept & System Design</h2>
+
+    <div class="card">
+      <h3>Materials to Sort</h3>
+      <ul>
+        <li>#1-72, 3/8" bolts</li>
+        <li>#1-72 nuts</li>
+        <li>#4-40, 1/4" bolts</li>
+        <li>#4-40, 3/8" bolts</li>
+        <li>#4-40, 1/2" bolts</li>
+        <li>#4-40, 1" bolts</li>
+        <li>#4-40 nuts</li>
+        <li>#4-40 lock nuts</li>
+        <li>Washers</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Flow Charts</h3>
+
+      <details class="code">
+        <summary>Original Concept (Multi-Machine Pipeline)</summary>
+        <div class="mermaid">---
+title: TITS Flow Chart (Original)
+---
+graph LR
+A[Everything]
+    A -->B{{ The _ Machine. }}
+    B -->D[Tiny Items]
+    D -->E{{ The _ Machine. }}
+    E -->F[Tiny Bolts]
+    E -->G[Tiny Nuts]
+    B -->H[The Rest]
+    H -->I{{ The _ Machine }}
+    I -->J[Washers]
+    I -->K[The Rest]
+    K -->L{{ The _ Machine }}
+    L -->M[Screws]
+    M -->N{{ The _ Machine }}
+    N -->O[#4-40 1/4 Inch Bolts]
+    N -->P[#4-40 3/8 Inch Bolts]
+    N -->Q[#4-40 1/2 Inch Bolts]
+    N -->R[#4-40 1 Inch Bolts]
+    L -->S[Nuts]
+    S -->T{{ The _ Machine }}
+    T -->U[Nuts]
+    T -->V[Lock Nuts]</code></pre>
+      </details>
+
+      <details class="code">
+        <summary>Updated Plan (Hexagon Stack)</summary>
+        <div class="mermaid">---
+title: TITS Flow Chart (Hexagon Stack)
+---
+graph LR
+A[Everything] --> B[Everything] & C[Standoffs]
+B --> D[Everything] & E[Lock Nuts]
+D --> F[Everything] & G[Bolts]
+F --> H[Everything] & I[Normal Nuts]
+H --> J[Small Nuts and Bolts] & K[Washers]</code></pre>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Timeline</h3>
+      <details class="code">
+        <summary>Original Project Timeline (Gantt)</summary>
+        <div class="mermaid">gantt
+    tickInterval 1week
+    weekday monday
+    dateFormat  YYYY-MM-DD
+    title       Timeline of Project
+
+    section Modules That Graham Has To Do
+    Cylinder Sorter : 2024-8-26, 3w
+    Washer Track : 2024-9-16, 2w
+    Bolt Sizer : 2024-9-30, 4w
+    Documenting So Far : 2024-10-28, 2w
+    Integration : 2024-11-11, 3w
+    Finish Documentation : 2024-12-2, 1w
+
+    section Modules That Jakob Has To Do
+    Input Control System : 2024-8-26, 3w
+    Initial Screenings #1 : 2024-9-16, 2w
+    Bolt Sizer : 2024-9-30, 4w
+    Initial Screenings #2 : 2024-10-28, 2w
+    Integration : 2024-11-11, 3w
+    Finish Documentation : 2024-12-2, 1w
+
+    section School Breaks 
+    Labor Day : 2024-09-02, 1d
+    Professional Learning Day : 2024-09-22, 1d
+    Teacher Workday : 2024-10-18, 1d
+    Teacher Workday : 2024-11-4, 1d
+    Teacher Workday : 2024-11-5, 1d
+    Thanksgiving Break : 2024-11-27, 3d
+
+    Project Due : milestone, 2024-12-08, 1d</code></pre>
+      </details>
+      <p class="muted">
+        Note: The system plan pivoted during development; the final architecture is based on the hexagon stack sorter.
+      </p>
+    </div>
+
+    <h2>Systems Documentation</h2>
+
+    <div class="card">
+      <h3>Hexagonal Sorter</h3>
+      <p>
+        Each hexagon has a vertical slot cut from the floor up to a specific height. That height corresponds to the maximum
+        size of the part allowed to pass through. Larger parts are caught in higher stages; smaller parts continue downward
+        until the correct stage captures them.
+      </p>
+
+      <div class="callout">
+        <strong>Analogy:</strong> This functions like stacked fishing nets—large hardware is caught first, and smaller pieces
+        fall through until they reach the “tight enough” stage. In this system, washers behave like the smallest “fish.”
+      </div>
+
+      <p class="muted">
+        Image reference (optional): Replace this link with your preferred hosted image for the hex stack.
+      </p>
+      <p>
+        <a href="https://github.com/user-attachments/assets/577fb2f7-2d89-4c10-be38-7b475fd13abc">Hexagonal Sorter Image</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Troubleshooting & Repairs</h3>
+
+      <details>
+        <summary>Acrylic Cracks</summary>
+        <ul>
+          <li>If acrylic cracks, replace the panel.</li>
+          <li>The design uses redundant screws, so minor failures should not cause a full system collapse.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Connection Break (Servo Cap / Servo Interface)</summary>
+        <ul>
+          <li>If the servo cap or connection breaks, reprint the cap.</li>
+          <li>The system uses a 4-way servo horn secured with small bolts to connect to the printed part.</li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Documentation Links</h3>
+      <p>
+        <strong>Onshape CAD:</strong>
+        <a href="https://cvilleschools.onshape.com/documents/672aa126c75f0bf0336b9dc3/w/92cd48f3c5af96a529a629e5/e/90918945a4e4bde3b3b8e3b7">
+          Open the project document
+        </a>
+      </p>
+    </div>
+
+    <footer>
+      <p>
+        <strong>Version note:</strong> This page is a cleaned, standardized write-up of the original planning + documentation.
+        It preserves your technical intent while improving clarity, formatting, and consistency.
+      </p>
+    </footer>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <!-- Initialize Mermaid -->
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

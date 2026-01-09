@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MISHAP-D | Documentation</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#e6ebef;
+      --border:#c6cad2;
+      --accent:#2563eb;
+
+      --code-bg:#0b1020;
+      --code-text:#e5e7eb;
+
+      --max: 980px;
+      --radius: 14px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.65;
+    }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    header{
+      text-align:center;
+      padding: 6px 0 18px;
+    }
+    header h1{
+      margin: 10px 0 6px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+    }
+    header p{
+      margin: 0 auto;
+      max-width: 85ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .pillbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top: 14px;
+    }
+    .pill{
+      font-size: 0.92rem;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    h2{
+      margin: 30px 0 10px;
+      font-size: 1.7rem;
+      letter-spacing: -0.01em;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 1.2rem;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .grid{ display:grid; gap: 14px; }
+    @media (min-width: 900px){
+      .grid.two{ grid-template-columns: 1fr 1fr; }
+    }
+
+    ul, ol{ margin: 8px 0 0 1.1rem; padding:0; }
+    li{ margin: 8px 0; }
+
+    .muted{ color: var(--muted); }
+
+    /* Media */
+    figure{ margin: 14px auto; text-align: center; }
+    figure img{
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    figcaption{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .media-stack img{
+      display:block;
+      margin: 10px auto;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    /* Tables */
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td{
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.98rem;
+    }
+    th{
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+    tr:last-child td{ border-bottom: none; }
+
+    /* Details / Code */
+    details{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+    details > summary{
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker{ display:none; }
+
+    details.code pre{
+      background: var(--code-bg);
+      color: var(--code-text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 10px 0 0;
+    }
+    pre code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      white-space: pre;
+      display: inline-block;
+      min-width: 100%;
+    }
+
+    .callout{
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin: 12px 0 0;
+    }
+
+    footer{
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Marginally Intelligent System for High Altitude Payload Delivery (MISHAP-D)</h1>
+      <p>
+        A payload delivery system that estimates aircraft position using a tracked laser angle, runs a physics simulation in real time,
+        and releases payloads only when projected impact intersects the target and both the pilot and tracker have armed the system.
+      </p>
+      <div class="pillbar" aria-label="Project tags">
+        <span class="pill">Drone payload bay</span>
+        <span class="pill">Ground tracking station</span>
+        <span class="pill">LoRa telemetry</span>
+        <span class="pill">Altimeter + logging</span>
+        <span class="pill">Simulation-based drop logic</span>
+      </div>
+    </header>
+
+    <!-- BOM -->
+    <section class="card">
+      <h2>Bill of Materials</h2>
+
+      <div class="grid two">
+        <div>
+          <h3>Cargo Bay</h3>
+          <ul>
+            <li>ESP32 Dev Board</li>
+            <li>Raspberry Pi Pico</li>
+            <li>9V battery + case</li>
+            <li>MPL3115A2 altimeter</li>
+            <li>Micro servo motor</li>
+            <li>Blue LED</li>
+            <li>LM7805 voltage regulator</li>
+            <li>33µF and 0.1µF capacitors</li>
+            <li>Adafruit Perma-Proto board</li>
+            <li>Assorted jumper wires</li>
+            <li>Assorted hardware</li>
+            <li>Assorted acrylic + 3D printed parts</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Ground Station</h3>
+          <ul>
+            <li>ESP32 Dev Board</li>
+            <li>OLED screen</li>
+            <li>2× panel-mount pushbuttons</li>
+            <li>2× potentiometers</li>
+            <li>2× panel-mount LEDs</li>
+            <li>Rotary encoder</li>
+            <li>LoRa module</li>
+            <li>Panel-mount toggle switch</li>
+            <li>Assorted jumper wires</li>
+            <li>Assorted hardware</li>
+            <li>Assorted acrylic + 3D printed parts</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARGO BAY DOCS -->
+    <section class="card">
+      <h2>Cargo Bay Documentation</h2>
+
+      <div class="grid two">
+        <div>
+          <h3>Design Purpose</h3>
+          <ul>
+            <li>Attach to the underside of a drone.</li>
+            <li>Securely house electronics and carry a drop payload.</li>
+            <li>Enable controlled payload release at any time during flight.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Success Criteria</h3>
+          <ul>
+            <li>All components fit without filing or scraping.</li>
+            <li>No internal interference between electronics and payload.</li>
+            <li>Lightweight enough for stable flight and good handling.</li>
+            <li>Payload can be released on command (reliably and repeatably).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Tip:</strong>
+        <span class="muted">STL renderings often communicate design intent better than photos—open the linked STL views and dropdown sections throughout this doc.</span>
+      </div>
+
+      <h3>System Breakdown</h3>
+      <ul>
+        <li><strong>Box:</strong> laser-cut enclosure (primary structure)</li>
+        <li><strong>Add-ons:</strong> hinges, servo mount, hatch lock, mounts</li>
+        <li><strong>Landing Gear:</strong> structural standoffs / protection (with tradeoffs)</li>
+      </ul>
+
+      <details>
+        <summary>Trials & Errors (Early Box Versions)</summary>
+        <p>
+          The box went through two main renditions plus additional renovations.
+          See the original iterations:
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/boxtry1-try2.md" target="_blank" rel="noopener noreferrer">
+            boxtry1 / try2
+          </a>.
+        </p>
+
+        <h4>Box Labels & Purposes</h4>
+        <figure>
+          <a href="https://github.com/rivques/mishap-d/edit/main/docs/CargoBayCAD.md" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.com/rivques/mishap-d/assets/91289762/71ebeea5-5f6d-4a5d-a75d-fd87f49da171" alt="Cargo bay labels overview" />
+          </a>
+          <figcaption>Click to open the CAD doc context.</figcaption>
+        </figure>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Marker</th>
+              <th>Object & Intended Purpose</th>
+              <th>Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Circle</strong></td>
+              <td>Lidar mount (measures box height; oriented downward).</td>
+              <td><img src="https://github.com/rivques/mishap-d/assets/91289762/b8dd66a4-f906-4cd0-a5d5-ab57b53b2111" alt="Lidar mount" style="max-width:220px;" /></td>
+            </tr>
+            <tr>
+              <td><strong>Triangle</strong></td>
+              <td>
+                Electronics bay door. Side locks prevent the door from falling in/out.
+              </td>
+              <td><img src="https://github.com/rivques/mishap-d/assets/91289762/6bdf5b7f-37a0-4f17-b8a0-940c22bf9030" alt="Electronics door" style="max-width:220px;" /></td>
+            </tr>
+            <tr>
+              <td><strong>Pentagon</strong></td>
+              <td>
+                Bracket used to lock the electronics bay door; traps a nut and prevents it from falling out.
+              </td>
+              <td><img src="https://github.com/rivques/mishap-d/assets/91289762/478cef75-d241-4ef0-9613-791eaa76ad99" alt="Bracket" style="max-width:220px;" /></td>
+            </tr>
+            <tr>
+              <td><strong>Arrow</strong></td>
+              <td>
+                Servo-driven release lock that opens the door to drop the payload.
+              </td>
+              <td><img src="https://github.com/rivques/mishap-d/assets/91289762/84286759-9981-40ea-a782-b1483bb3ff6f" alt="Servo lock" style="max-width:220px;" /></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4>Issues Identified in Early Version</h4>
+        <ul>
+          <li>Side door had insufficient access for wire changes after assembly.</li>
+          <li>No switch hole.</li>
+          <li>USB port access required removing the microcontroller.</li>
+          <li>Hinges were too tight; gravity couldn’t open the door.</li>
+          <li>SD card opening was mismeasured.</li>
+          <li>Hinge screw holes interfered with internal brackets.</li>
+        </ul>
+      </details>
+
+      <h3>Current Box</h3>
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/15924a79be7bf9a228da18630f715c2e00e89422/assets/Assembly%202.png" alt="Current cargo bay assembly" />
+      </figure>
+
+      <ul>
+        <li>Laser-cut, two-section container with a center wall to isolate cargo from electronics.</li>
+        <li>Electronics bay includes a battery pack and a Raspberry Pi Pico.</li>
+        <li>Holes are sized for #4-40 lab screws and #1-72 for smaller fasteners.</li>
+        <li>
+          The large hole on the electronics bay door is the lock—designed to wrap and twist a wire shut.
+          <details>
+            <summary>Photo Example</summary>
+            <figure>
+              <a href="https://github.com/rivques/mishap-d/edit/main/docs/CargoBayCAD.md" target="_blank" rel="noopener noreferrer">
+                <img src="https://github.com/rivques/mishap-d/assets/91289762/6ee7e501-42f9-4481-b5fa-4350b2900304" alt="Lock example" />
+              </a>
+            </figure>
+          </details>
+        </li>
+      </ul>
+
+      <h3>Landing Gear</h3>
+      <ul>
+        <li>Single main rendition using a plane + tube connected to a corner cap; mates into an entry slot.</li>
+        <li>
+          STL references:
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/endcap.md" target="_blank" rel="noopener noreferrer">endcap</a>,
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/receiver.md" target="_blank" rel="noopener noreferrer">receiver slot</a>.
+        </li>
+        <li>
+          The fit is intentionally not perfectly square to create tension-based strength, but it increases fragility during crashes.
+        </li>
+      </ul>
+
+      <details>
+        <summary>Landing Gear Fit & Failure</summary>
+        <div class="media-stack">
+          <img src="https://github.com/rivques/mishap-d/assets/91289762/d265ea25-eabb-4198-a236-f222ed34d6b3" alt="Landing gear imperfections" />
+          <img src="https://github.com/rivques/mishap-d/assets/91289762/ffcf9fe4-5b3d-42f9-80c6-c5cbfefe46e5" alt="Landing gear failure 1" />
+          <img src="https://github.com/rivques/mishap-d/assets/91289762/5a3c16c8-40b6-4bbd-a4d1-9a455e789179" alt="Landing gear failure 2" />
+        </div>
+      </details>
+
+      <h3>Add-ons</h3>
+
+      <h4>Hinges</h4>
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/assets/91289762/68b1797e-d195-4143-83e4-84167e003d6e" alt="Doors opening (hinges)" />
+      </figure>
+      <p class="muted">
+        Two hinge families were used: one for wall-to-floor motion (90°) and one for floor-to-floor motion (180°).
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>90° Hinges</th>
+            <th>180° Hinges</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>STL view</strong></td>
+            <td><a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/angled%20hinges.md" target="_blank" rel="noopener noreferrer">Wall-to-Floor</a></td>
+            <td><a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/straight%20hinges.md" target="_blank" rel="noopener noreferrer">Floor-to-Floor</a></td>
+          </tr>
+          <tr>
+            <td><strong>Photo</strong></td>
+            <td><img src="https://github.com/rivques/mishap-d/assets/91289762/a7cbe299-030f-4916-95d3-27764919067f" alt="90 degree hinge" style="max-width:260px;" /></td>
+            <td><img src="https://github.com/rivques/mishap-d/assets/91289762/fad67f51-4504-476e-8fad-b35a5d2c8554" alt="180 degree hinge" style="max-width:260px;" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Servo Mount</h4>
+      <ul>
+        <li>Wraparound servo mount tightened by a self-tapping bolt (two wall holes required).</li>
+        <li>Fastened externally with washers to distribute load and prevent pull-through.</li>
+        <li>Provides additional support by capturing the servo body and using surrounding material as a brace.</li>
+        <li>
+          STL reference:
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/servo%20mount%20on%20wall.md" target="_blank" rel="noopener noreferrer">
+            servo mount on wall
+          </a>
+        </li>
+      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Top-Right Profile</th>
+            <th>Section View</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img src="https://github.com/rivques/mishap-d/assets/91289762/468412ae-5729-44a5-9b58-eb9be3fedeec" alt="Servo mount front profile" style="max-width:320px;" /></td>
+            <td><img src="https://github.com/rivques/mishap-d/assets/91289762/0ba4db49-f677-4ae6-b2b6-89ad9c74a286" alt="Servo mount section profile" style="max-width:320px;" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Drone Mounts</h4>
+      <ul>
+        <li>Simple mounts to screw the cargo bay to the drone.</li>
+        <li>Required a second revision: first iteration fit too tightly and ignored screw threading (threading bit into drone landing gear).</li>
+        <li>Printable without supports and uses minimal material.</li>
+        <li>
+          STL reference:
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/drone%20mount.md" target="_blank" rel="noopener noreferrer">
+            drone mount render
+          </a>
+        </li>
+      </ul>
+
+      <details>
+        <summary>Threading Interference Example</summary>
+        <figure>
+          <img src="https://github.com/rivques/mishap-d/assets/91289762/918fe0cf-1033-4f8a-8138-3e579a841fbb" alt="Screw threading interference" />
+        </figure>
+      </details>
+
+      <h4>Cargo Bay Latch</h4>
+      <ul>
+        <li>Two iterations; the second was driven by a door redesign (remake was faster than editing).</li>
+        <li>
+          STL reference:
+          <a href="https://github.com/rivques/mishap-d/blob/main/docs/STLFILES/cargobayclip.md" target="_blank" rel="noopener noreferrer">
+            cargo bay clip
+          </a>
+        </li>
+      </ul>
+
+      <h3>What Not To Do</h3>
+      <ul>
+        <li>Ensure the center door is oriented correctly relative to the servo wire passthrough.</li>
+        <li>Orient the Pico and battery pack so wiring routes toward the hinge side—otherwise the door can bind or tear wires.</li>
+        <li><strong>Do not oversize landing gear.</strong> It contributed to instability and a crash.</li>
+      </ul>
+
+      <details>
+        <summary>Crash Clip (Evidence)</summary>
+        <p><a href="https://github.com/rivques/mishap-d/assets/38469076/972d8c86-7016-41f2-878d-53066bbe97b3" target="_blank" rel="noopener noreferrer">Video link</a></p>
+      </details>
+
+      <h3>Wiring (Cargo Bay)</h3>
+      <p class="muted">
+        Prototyped on a breadboard, then transferred to a protoboard for rigidity.
+        Original plan: <a href="/payload-circuit.fzz">payload-circuit.fzz</a>
+      </p>
+
+      <ul>
+        <li><strong>9V:</strong> into ESP32 <code>VIN</code> and voltage regulator input.</li>
+        <li><strong>Servo:</strong> Power → ESP32 <code>VIN</code>, GND → GND, Signal → ESP32 <code>D27</code></li>
+        <li><strong>MPL3115A2:</strong> SDA → <code>D21</code>, SCL → <code>D22</code>, GND → GND, VIN → regulator output</li>
+        <li><strong>Pico:</strong> ESP32 <code>TX2</code> → Pico <code>GP9</code>, GND → GND, Pico <code>VSYS</code> → regulator output</li>
+        <li><strong>Debug LED:</strong> Cathode → GND, Anode → ESP32 <code>D32</code></li>
+        <li><strong>Regulator caps:</strong> 33µF across GND/VIN, 0.1µF across GND/VOUT</li>
+      </ul>
+    </section>
+
+    <!-- GROUND STATION CAD -->
+    <section class="card">
+      <h2>Ground Station CAD</h2>
+
+      <h3>Design Requirements</h3>
+      <ul>
+        <li>Measure the plane’s angle relative to the horizontal plane.</li>
+        <li>Measure change in angle while the operator tracks the plane.</li>
+        <li>Provide an on-device menu (OLED/LCD) and physical inputs (buttons, toggle, etc.).</li>
+      </ul>
+
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image2.png" alt="Ground station section view" />
+        <figcaption>Section view from the front, split through the center of the project.</figcaption>
+      </figure>
+
+      <h3>CAD Breakdown</h3>
+      <p>
+        The ground station tracks the moving aircraft and gathers angular data used to calculate the payload drop point.
+      </p>
+
+      <h4>The Trigger Grip</h4>
+      <p class="muted">
+        The handle houses the trigger, display, and arm button in a compact, detachable assembly. The main CAD challenge was
+        surfacing and integrating electronics into a tight geometry.
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image18.png" alt="Trigger grip view 1" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image8.png" alt="Trigger grip view 2" />
+      </div>
+
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image4.png" alt="Trigger grip button layout" />
+        <figcaption>Button layout for the trigger grip.</figcaption>
+      </figure>
+
+      <h4>Wire Pathing</h4>
+      <p class="muted">
+        Wire routing through rotating joints was one of the most complex CAD constraints. A slip ring would solve this cleanly,
+        but the chosen approach allowed wires to move freely inside joints, trading range-of-motion for simplicity.
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image16.png" alt="Wire path overview" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image20.png" alt="Joint wire wrap design" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image6.png" alt="Second joint clearance hole" />
+      </div>
+
+      <h4>Sights</h4>
+      <p class="muted">
+        The station needed a pointing mechanism for angle measurements. The initial plan used a visible high-power laser beam,
+        but the final direction was a more traditional sighting system (iron sight + LED-based red-dot concept).
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image7.png" alt="Sight concept 1" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image19.png" alt="Sight concept 2" />
+      </div>
+
+      <h4>Versions & Merges</h4>
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image10.png" alt="Versions and merges screenshot" />
+        <figcaption>Branching/merging workflow enabled parallel CAD experimentation without breaking the master model.</figcaption>
+      </figure>
+
+      <h3>Design Style</h3>
+
+      <h4>Design for 3D Printing</h4>
+      <p class="muted">
+        Designs were shaped around FDM realities (layering, overhangs, support removal). Teardrop nut traps and modular prints reduced support burden.
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image3.png" alt="Sliced trigger grip" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image1.png" alt="Red dot print modularity 1" />
+      </div>
+
+      <h4>Hidden Complexity</h4>
+      <p class="muted">
+        Many joints include multiple stabilization points for sensors (e.g., potentiometers), improving accuracy by reducing wobble and extending part life.
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image17.png" alt="Joint detail 1" />
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image5.png" alt="Joint detail 2" />
+      </div>
+
+      <h4>Clean CAD</h4>
+      <p class="muted">
+        The ground station CAD was maintained with updated contexts and minimal errors, which required careful feature management.
+      </p>
+
+      <h3>Construction</h3>
+
+      <h4>3D Printer Settings</h4>
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image10.png" alt="Printer settings reference" />
+        <figcaption>Settings tuned for clean support detachment on flat surfaces and improved results on complex curves.</figcaption>
+      </figure>
+
+      <h4>Wiring & Soldering</h4>
+      <p class="muted">
+        Soldering was manageable; routing wires through the full assembly (including rotating sections) was the time-consuming part.
+        Shrink wrap + connectors improved strain relief and maintenance.
+      </p>
+
+      <div class="media-stack">
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image21.jpg" alt="Wiring photo 1" />
+        <img src="https://github.com/rivques/mishap-d/blob/3f42e853a8b2bf39fef3c0bed54094c4a2ee6a2f/assets/image22.jpg" alt="Wiring photo 2" />
+        <img src="https://github.com/rivques/mishap-d/blob/3f42e853a8b2bf39fef3c0bed54094c4a2ee6a2f/assets/image23.jpg" alt="Wiring photo 3" />
+      </div>
+
+      <h4>Construction Difficulties</h4>
+      <ul>
+        <li>LCD fitment issues due to small inaccuracies in a downloaded reference CAD model.</li>
+        <li>Support removal in tight areas required a Dremel and added time.</li>
+        <li>
+          Joint between trigger grip and rotation tube was initially split into two parts but snapped repeatedly.
+          Final solution kept both printed together, despite print-orientation drawbacks.
+        </li>
+      </ul>
+
+      <h3>Reflection (Ground Station)</h3>
+      <p>
+        A major constraint was time: ground station complexity limited integration time with the rest of the system.
+        A faster path would have been to ship a “good-enough” prototype first (even with exposed external wiring),
+        then refine routing and CAD details after the core system was integrated and working.
+      </p>
+
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/blob/47df40ad20b2594f7d03712b8e78049119fa7873/assets/image15.png" alt="Ground station final image" />
+      </figure>
+    </section>
+
+    <!-- CODE -->
+    <section class="card">
+      <h2>Software</h2>
+
+      <h3>Code Location</h3>
+      <p>
+        Repository: <a href="https://github.com/rivques/mishap-d" target="_blank" rel="noopener noreferrer">GitHub (mishap-d)</a>
+      </p>
+
+      <h3>Repository Structure</h3>
+      <details>
+        <summary><code>mishap-d/</code> (firmware)</summary>
+        <ul>
+          <li><strong><code>config.h</code>:</strong> Pinouts and subsystem build selection (<code>GROUND</code>, <code>PAYLOAD</code>, <code>PAYLOADONLY</code>).</li>
+          <li><strong><code>groundcontroller.h</code>:</strong> Ground station firmware: display UI, potentiometer readings, LoRa comms.</li>
+          <li><strong><code>mishapprotocol.h</code>:</strong> Shared protocol + linear algebra used by both ground and payload.</li>
+          <li><strong><code>payloadcontroller.h</code>:</strong> Payload firmware: sensor fusion, localization, impact simulation, drop decision, logging, telemetry.</li>
+          <li><strong><code>mishap-d.ino</code>:</strong> Entry point; dispatches to ground/payload code.</li>
+          <li><strong><code>graham-interface.ino.dontcompile</code>:</strong> Display code integrated into <code>groundcontroller.h</code>; excluded from Arduino auto-build.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><code>tests/</code> (helpers + validation)</summary>
+        <ul>
+          <li><strong><code>basic-radio-client/</code>, <code>basic-radio-server/</code>:</strong> LoRa/RFM9x test programs.</li>
+          <li><strong><code>lidar_test/</code>:</strong> Garmin LidarLitev4-LED validation.</li>
+          <li><strong><code>i2c_scan/</code>:</strong> Adapted from Adafruit; scans ESP32 I2C bus for devices.</li>
+          <li><strong><code>seriallogtest/</code>:</strong> UART2 repeater for datalogger testing.</li>
+          <li><strong><code>servoassistant</code>:</strong> Servo sweep test for payload door positions.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary><code>*.py</code> and <code>lib/</code> (Pico datalogger)</summary>
+        <p class="muted">
+          Python files + <code>lib</code> run on the Raspberry Pi Pico used for UART2 logging. Current scripts include
+          <code>picologger.py</code> and <code>boot.py</code>.
+        </p>
+      </details>
+
+      <h3>History of Development</h3>
+      <ul>
+        <li><strong>January:</strong> Physics simulation + radio protocol; ground station menu work started.</li>
+        <li><strong>February:</strong> Continued menu development; attempted (then abandoned) multithreaded radio duties.</li>
+        <li><strong>March:</strong> SD card logging added; display code integrated; payload circuit board assembled.</li>
+        <li><strong>Mid-April:</strong> Debugging and integration.</li>
+        <li><strong>Late April → Early May:</strong> LIDAR failure → pivot to barometric altimeter (MPL3115A2).</li>
+        <li><strong>Early May:</strong> SD card corruption → pivot to Raspberry Pi Pico for logging.</li>
+      </ul>
+    </section>
+
+    <!-- TESTS -->
+    <section class="card">
+      <h2>Testing</h2>
+
+      <h3>Test 1 — April 22</h3>
+      <p><strong>Media:</strong> <a href="https://github.com/rivques/mishap-d/assets/38469076/50176521-65ab-4e1a-8dff-e52d6706bea4" target="_blank" rel="noopener noreferrer">Video link</a></p>
+      <p class="muted">
+        Two critical issues: skid landing with an open payload bay door, and datalogging failure (no post-test data). This led to switching from SD card logging to Pico logging.
+      </p>
+
+      <h3>Test 2 — May 15</h3>
+      <ul>
+        <li><strong>Takeoff:</strong> <a href="https://github.com/rivques/mishap-d/assets/38469076/751fbe20-d896-425d-ab39-77b227352c7a" target="_blank" rel="noopener noreferrer">Video link</a></li>
+        <li><strong>Payload release:</strong> <a href="https://github.com/rivques/mishap-d/assets/38469076/0a5dc9f4-8793-4ebd-a090-f2772520797e" target="_blank" rel="noopener noreferrer">Video link</a></li>
+        <li><strong>Fall:</strong> <a href="https://github.com/rivques/mishap-d/assets/38469076/972d8c86-7016-41f2-878d-53066bbe97b3" target="_blank" rel="noopener noreferrer">Video link</a></li>
+      </ul>
+
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/assets/91289762/ffcf9fe4-5b3d-42f9-80c6-c5cbfefe46e5" alt="Crashed drone aftermath photo" />
+        <figcaption>Aftermath: drone impact with project attached (landing legs absorbed much of the energy).</figcaption>
+      </figure>
+
+      <p class="muted">
+        Adding landing legs shifted the center of mass away from where the drone’s control algorithms expected it, producing unstable oscillations and loss of control.
+        The drone mostly survived (minor panel damage), and—most importantly—data was successfully captured.
+      </p>
+
+      <figure>
+        <img src="https://github.com/rivques/mishap-d/assets/38469076/ea0f5666-39ea-4ef4-af89-881e11699b6d" alt="Flight Test 2 chart" />
+        <figcaption>
+          Flight Test 2: altitude (blue), door status (red), velocity (yellow).
+          Raw data: <a href="https://docs.google.com/spreadsheets/d/1Iwo3LpYv4sStXbSmEhpzdQrKsmYBJGHzCGTjOUSJNG4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Google Sheet</a>.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- REFLECTIONS -->
+    <section class="card">
+      <h2>Team Reflections</h2>
+
+      <h3>Graham</h3>
+      <p>
+        The project did not meet all original conditions, but the team built a technically ambitious system with working subsystems:
+        cargo bay, ground station, OLED interface, and radio link. The main constraint was integration time. A redesign would shrink the cargo bay,
+        remove landing gear, and add a door that can both open and close.
+      </p>
+
+      <h3>River</h3>
+      <p>
+        The final result was smaller in scope than the initial plan and integration with a team member’s ground station work was not completed due to time.
+        However, the system was “objectively cool,” provided valuable LoRa experience, and surfaced several hardware failures that informed later design choices.
+      </p>
+
+      <h3>Jakob</h3>
+      <p>
+        The ground station design complexity reduced integration time. A prototype-first approach (even with less elegant wiring) would have allowed earlier
+        software integration, followed by refinement and optimization once the core system was working.
+      </p>
+    </section>
+
+    <!-- CONCEPT + FLOWCHART -->
+    <section class="card">
+      <h2>The Concept</h2>
+      <p>
+        A human pilot flies a straight approach over the target. A ground operator points a laser at the aircraft; the laser angles are transmitted to the payload
+        system, which triangulates position and continuously simulates drop trajectories. Payload release occurs only when projected impact intersects the target
+        and both operator and pilot have armed the system.
+      </p>
+
+      <h3>Success Statement</h3>
+      <ul>
+        <li>Fly, collect data, and store data on a Pico.</li>
+        <li>Meet requirements for an A in Engineering 4.</li>
+        <li>Accurately drop payloads on target.</li>
+      </ul>
+
+      <details class="code">
+        <summary>Flowchart (Mermaid)</summary>
+        <pre><code class="language-mermaid">%%{init: {"flowchart": {"defaultRenderer": "elk"}} }%%
+flowchart TB
+    subgraph Pilot
+        Transmitter
+        end
+    subgraph Plane["Plane"]
+        subgraph FlightSystem["Flight System"]
+        Receiver
+        Battery
+        ESC["Electric Speed Controller"]
+        PropMotor["Prop Motor"]
+        CSS["Control Surface Servos"]
+        FiveVolts(["5V rail"])
+        end
+        subgraph PayloadSystem["Payload System"]
+        Altimeter["Altimeter (or maybe LIDAR)"]
+        PayloadBayDoor["Payload Bay Doors"]
+        PLoRa["LoRa module"]
+        subgraph Pico["Flight controller (Pico)"]
+            Telemetry
+            --> SDCard["Log file"]
+
+            ArmingInfo["Arming info"]
+
+            subgraph Localization
+                Altitude
+                LaserAngles["Laser Angles"]
+                --> FunWithTrig["Fun with Trig"]
+                Altitude --> FunWithTrig --> LocInfo
+                end
+            subgraph PhysicsPrediction["Physics sim"]
+                Kinematics(["2D kinematics\n(in YZ plane)"])
+                IntersectWithGround(["Intersect trajectory with ground plane"])
+                LocInfo --> |"Current position and velocity relative to target"| Kinematics
+                --> |"Projected drop trajectory"| IntersectWithGround
+                --> ProjectedImpactLocation["Projected Impact Location"]
+            end
+        ProjectedImpactLocation --> SDCard
+        ProjectedImpactLocation --> PayloadDropLogic["Payload drop logic"]
+        --> Telemetry
+        ArmingInfo --> PayloadDropLogic
+        end
+    PLoRa --> |"Raw data for analysis"| SDCard
+    Telemetry --> PLoRa
+    PLoRa --> |"Tracker ARM switch"| ArmingInfo
+    end
+    end
+    subgraph GroundStation["Tracking Station"]
+      GSLoRa["LoRa module"]
+      LaserPointer["Laser pointer"] --> |physically attached to| Encoders["Rotary sensors"]
+      --> GSPico["Ground station Pico"]
+      UI["Screen and buttons"] <--> |"Plane configuration, live telemetry"| GSPico
+      TGButton["Tracker ARM button"] --> GSPico
+      end
+    PLoRa <--> |"Laser angles, telemetry"| GSLoRa
+    GSPico <--> GSLoRa
+    LocInfo --> Telemetry
+    Altimeter --> Altitude
+    Transmitter --> |"Flight controls, pilot's ARM switch"|Receiver
+    ESC --> PropMotor
+    Battery --x |12V| ESC
+    ESC --x |Supply from BEC| FiveVolts
+    Receiver --> CSS
+    Receiver --> |Throttle info| ESC
+    FiveVolts --x CSS
+    FiveVolts --x Receiver
+    FiveVolts --x Altimeter
+    FiveVolts --x PayloadBayDoor
+    FiveVolts --x PLoRa
+    PLoRa --> LaserAngles
+    Receiver --> |Pilot's ARM switch| ArmingInfo
+    PayloadDropLogic --> |If all are armed and payload intersects| PayloadBayDoor</code></pre>
+      </details>
+
+      <details>
+        <summary>Flowchart Explanation</summary>
+        <p class="muted">
+          There are three systems: pilot (RC transmitter/receiver), ground tracking station (laser + angle sensors + LoRa),
+          and plane payload system (localization + physics sim + drop decision + logging/telemetry). The payload system is intentionally isolated from flight controls
+          so a payload failure does not affect flyability.
+        </p>
+      </details>
+    </section>
+
+    <!-- SAFETY -->
+    <section class="card">
+      <h2>Safety</h2>
+
+      <h3>Isolated Systems</h3>
+      <p class="muted">
+        The payload system is largely isolated from the flight system. Shared links are limited to the 5V rail and an arming signal.
+        This reduces the chance that payload faults compromise flight control.
+      </p>
+
+      <h3>LiPo Batteries</h3>
+      <p class="muted">
+        Batteries are charged under supervision or in a LiPo safety pouch to reduce fire risk.
+      </p>
+
+      <h3>Targeting & Payload Drops</h3>
+      <p class="muted">
+        Drops are gated by dual-arming (pilot + tracker). Early testing uses lightweight payloads over clear zones; higher-risk tests require protective gear.
+      </p>
+
+      <h3>Lasers</h3>
+      <p class="muted">
+        Tracking lasers are activated only when they cannot point at humans, and tracking is avoided when full-scale aviation is present nearby.
+      </p>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section class="card">
+      <h2>Schedule</h2>
+
+      <details class="code">
+        <summary>Gantt (Mermaid)</summary>
+        <pre><code class="language-mermaid">---
+displayMode: compact
+---
+gantt
+    title MISHAP-D Timeline
+    dateFormat YYYY-MM-DD
+        section Planning
+            Create Planning Document : 2023-11-29, 17d
+            Planning Due : milestone, 2023-12-15, 1d
+        section CAD
+            Initial CAD done : milestone, 2024-1-20, 1d
+            Electronics bay CAD : 2024-1-2, 21d
+            Tracking station CAD : 2024-1-1, 10d
+            Payload bay CAD : 2024-1-11, 11d
+        section CODE
+            PoC - Programmed Pico and altimeter in the plane : 2024-1-1, 31d
+            physics sim dev : 2024-2-16, 14d
+            tracking station dev : 2024-2-2, 14d
+            localizer dev: 2024-1-31, 21d
+        section Construction
+            Build tracking station : 2024-2-8, 14d
+            Build electronics bay: 2024-2-15, 14d
+            Build payload bay : 2024-3-1, 12d
+            Misc. buffer time : 2024-3-1, 31d
+        section Testing and Polishing
+            Characterize Plane : 2024-1-21, 31d
+            Take Tuning Flight : 2024-1-31, 11d
+            Functional prototype: milestone, 2024-2-28, 1d
+            Ready for Flight: milestone, 2024-3-30, 1d
+            Tuning system : 2024-4-8, 40d
+            Add rudder control (spicy) : 2024-5-19, 18d
+            Project due: milestone, 2024-5-19, 1d
+            End of school : milestone, 2024-6-7, 1d
+        section Documentation
+            Do the Documentation : 2023-11-30, 155d
+        section School Breaks
+            Winter Break : crit, 2023-12-16, 16d
+            Spring Break : crit, 2024-3-31, 9d
+            AP Testing : crit, 2024-5-6, 14d</code></pre>
+      </details>
+
+      <h3>Revisions</h3>
+      <ul>
+        <li><strong>2023-12-13:</strong> First revision</li>
+        <li><strong>2023-12-25:</strong> Switch from vision-based localization to laser-based localization</li>
+      </ul>
+
+      <details>
+        <summary>Weekly Log (Planning Notes)</summary>
+        <ul>
+          <li><strong>Week of 11/13:</strong> Start planning document</li>
+          <li><strong>Week of 11/20:</strong> Add planned schedule</li>
+          <li><strong>Week of 11/27:</strong> Tweak schedule, refine flowchart</li>
+          <li><strong>Week of 12/4:</strong> Add sketches, submit plan</li>
+          <li><strong>Week of 12/11:</strong> Side quest: experiment with double integration of acceleration</li>
+          <li><strong>Week of 12/18–1/1:</strong> Winter break</li>
+          <li><strong>Week of 1/2:</strong> Pivot: vision → lasers</li>
+          <li><strong>Week of 1/8:</strong> River: software skeleton · Graham: physics sim · Jakob: trigger grip surfaces</li>
+          <li><strong>Week of 1/15:</strong> River: vector math + radios · Graham: continue sim · Jakob: electronics integration</li>
+          <li><strong>Week of 1/22:</strong> Radios talking · sim finished + menu started · CAD expansion</li>
+          <li><strong>Week of 1/29:</strong> Packet encoding started · menu continues · mechanism complete</li>
+          <li><strong>Week of 2/5:</strong> Encoding done · menu continues · laser testing</li>
+          <li><strong>Week of 2/12:</strong> Multithreading attempt · menu continues · mounts for laser/scope</li>
+          <li><strong>Week of 2/19:</strong> Multithreading abandoned · refactor · reprint OLED fit</li>
+          <li><strong>Week of 2/26:</strong> SD logging work · menu finished · rotation pipe wiring</li>
+          <li><strong>Week of 3/4:</strong> SD logging complete · menu integration · LIDAR work</li>
+          <li><strong>Week of 3/11:</strong> Refactor menu · LIDAR work · payload modeling · wire slack planning</li>
+          <li><strong>Week of 3/18:</strong> Payload circuit + soldering · fit circuit · fix acrylic shaft + rewire</li>
+          <li><strong>Week of 3/25:</strong> Payload solder/test · payload modeling · ground station assembly</li>
+          <li><strong>Week of 4/8:</strong> Troubleshoot payload circuit · build payload · wire ground station</li>
+          <li><strong>Week of 4/15:</strong> Fix debug LED pin · ground station wire pathing finished</li>
+          <li><strong>Week of 4/22:</strong> SD card errors · breadboard installation</li>
+          <li><strong>Week of 4/29:</strong> Pivot to Pico logging · finished wiring + started sights</li>
+          <li><strong>Week of 5/6:</strong> AP testing</li>
+          <li><strong>Week of 5/13:</strong> Flight test</li>
+          <li><strong>Week of 5/20:</strong> Documentation</li>
+          <li><strong>Week of 5/28:</strong> Documentation</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- PROTOCOL (CLEANED) -->
+    <section class="card">
+      <h2>Protocol & Firmware Architecture</h2>
+
+      <h3>Logging</h3>
+      <p class="muted">
+        Logging uses the <a href="https://github.com/thijse/Arduino-Log" target="_blank" rel="noopener noreferrer">ArduinoLog</a> library.
+        The radio loop logs via a queue of messages (not assumed thread-safe).
+      </p>
+
+      <details class="code">
+        <summary>Threaded Log Struct</summary>
+        <pre><code class="language-cpp">struct ThreadedLogMsg {
+  int level;
+  String msg;
+};</code></pre>
+      </details>
+
+      <h3>Radio Protocol</h3>
+      <p class="muted">
+        Uses Radiohead’s <code>RHReliableDatagrams</code> with an RFM9x LoRa radio (251-byte packets).
+        A shared <code>MishapProtocol</code> class is included by both ground and payload controllers to keep definitions aligned.
+      </p>
+
+      <details class="code">
+        <summary>Packet Format</summary>
+        <pre><code class="language-cpp">enum PacketType : byte {
+  LaserAngle,
+  TargetSettings,
+  ClearedCache,
+  PayloadTelemetry
+  // etc.
+};
+
+struct MishapProtocolPacket {
+  PacketType packetType;
+  byte data[250];
+};</code></pre>
+      </details>
+
+      <h3>Packet Types</h3>
+      <details class="code">
+        <summary>LaserAngle (GC → PC)</summary>
+        <pre><code class="language-cpp">struct LaserAngleData {
+  float theta;
+  float phi;
+}; // 8 bytes</code></pre>
+      </details>
+
+      <details class="code">
+        <summary>TargetSettings (GC → PC)</summary>
+        <pre><code class="language-cpp">struct TargetSettingsData {
+  float target_x;
+  float target_y;
+  float target_z;
+}; // 12 bytes</code></pre>
+      </details>
+
+      <details class="code">
+        <summary>ClearedCache (PC → GC)</summary>
+        <pre><code class="language-cpp">struct ClearedCacheData {}; // 0 bytes</code></pre>
+      </details>
+
+      <details class="code">
+        <summary>PayloadTelemetry (PC → GC)</summary>
+        <pre><code class="language-cpp">struct PayloadTelemetryData {
+  unsigned long time; // ms since plane power-on
+  float altitude;
+  Vector3d payloadLoc;
+  Vector3d payloadVel;
+  Vector3d impactLoc;
+  bool payload_dropped;
+}; // 45 bytes</code></pre>
+      </details>
+
+      <h3>Controller Loop Responsibilities</h3>
+
+      <div class="grid two">
+        <div>
+          <h4>Ground Controller</h4>
+          <ol>
+            <li>Process receive queues from radio loop</li>
+            <li>Update internal state from packets</li>
+            <li>Handle UI (screen + buttons)</li>
+            <li>Send updated laser angles/settings</li>
+            <li>Track loop stats and log</li>
+          </ol>
+        </div>
+        <div>
+          <h4>Payload Controller</h4>
+          <ol>
+            <li>Process receive queues from radio loop</li>
+            <li>Update internal state from packets</li>
+            <li>Update sensors</li>
+            <li>Compute position + velocity</li>
+            <li>Simulate drop trajectory and impact</li>
+            <li>Decide whether to drop (arm + target intersection)</li>
+            <li>Log data (nonvolatile)</li>
+            <li>Transmit telemetry</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3>Coordinate System</h3>
+      <p class="muted">
+        Origin XY is at the tracking station. Z is ground directly below the station. +X forward, +Y right.
+      </p>
+    </section>
+
+    <footer>
+      <span>
+        Cleaned and reorganized for consistent hierarchy, spacing, and presentation. All original links/media are preserved.
+      </span>
+    </footer>
+
+  </div>
+</body>
+</html>
