@@ -44,10 +44,10 @@
         }
 
         .default-browser {
-            background-image: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg");
+            background: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg") no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            position: fixed;
+            inset: 0;
             transition: filter 0.4s ease;
             min-height: 100vh;
             padding-top: 100px;
@@ -90,7 +90,7 @@
             background-image: url(../images/projectoverview/BAD_MOBILE_GAME_BACKGROUND_IMAGE.png);
             background-position: fixed;
             background-size: cover;
-            min-height: 100vh;
+            min-height: 80vh;
         }
 
         body:has(.p2:hover) .default-browser {
