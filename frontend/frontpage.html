@@ -13,7 +13,7 @@
         }
 
         /* NAVBAR */
-        .navigation {
+        .top-nav {
             position: fixed;
             top: 0;
             left: 0;
@@ -21,38 +21,38 @@
 
             display: flex;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 1);
+            background-color: rgba(255, 255, 255, 0.95);
             gap: 20px;
 
-            padding: 15px 0;
+            padding: 12px 0;
             z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
-        .navigation a {
+        .top-nav a {
             text-decoration: none;
-            color: black;
+            color: #111;
             font-size: 1rem;
+            font-weight: 600;
             display: inline-flex;
             /* Use flexbox for easy centering */
             align-items: center;
             /* Center vertically */
             justify-content: center;
             /* Center horizontally */
-            height: 2em;
-            /* Set equal height and width for a perfect circle */
-            width: 6em;
-            border: 2px solid black;
+            border: 2px solid #111;
             /* Add the border */
-            padding: 1px;
+            border-radius: 999px;
+            padding: 6px 18px;
             /* Add some space around the text */
             text-align: center;
             /* Fallback for centering */
             transition: all 0.3s ease;
         }
 
-        .navigation a:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
+        .top-nav a:hover {
+            background-color: #111;
+            color: #fff;
         }
 
         /* HERO / BACKGROUND */
@@ -105,10 +105,10 @@
 
 <body>
 
-    <nav class="navigation">
-        <span class="circle-text"><a id = "home" href="frontpage.html">Home</a></span>
-        <span class="circle-text"><a id = "projects" href="projectoverview.html">Projects</a></span>
-        <span class="circle-text"><a id = "contact" href="contact.html">Contact</a></span>
+    <nav class="top-nav">
+        <a href="frontpage.html">Home</a>
+        <a href="projectoverview.html">Projects</a>
+        <a href="contact.html">Contact</a>
     </nav>
 
     <article class="all-browsers">
@@ -119,22 +119,6 @@
         </div>
     </article>
 
-    <script>
-        const navLinks = document.querySelectorAll("#home", "#projects", "#contact");
-        
-        if(navLinks.home)
-            navLinks.home.addEventListener("click", () => {
-                window.location.href = "frontpage.html";
-            });
-        if(navLinks.projects)
-            navLinks.projects.addEventListener("click", () => {
-                window.location.href = "projectoverview.html";
-            });
-        if(navLinks.contact)
-            navLinks.contact.addEventListener("click", () => {
-                window.location.href = "contact.html";
-            });
-    </script>
 </body>
 
 </html>
