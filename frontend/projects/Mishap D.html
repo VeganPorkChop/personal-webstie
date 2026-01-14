@@ -23,7 +23,7 @@
 
     *{ box-sizing:border-box; }
     body{
-      margin:0;
+      margin: 30px 0 0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color:var(--text);
       background:var(--bg);
@@ -200,10 +200,47 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       font-size: 0.95em;
     }
+    .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: #111;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #111;
+            border-radius: 999px;
+            padding: 6px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav a:hover {
+            background-color: #111;
+            color: #fff;
+        }
   </style>
 </head>
 
 <body>
+  <nav class="top-nav">
+        <a href="../frontpage.html">Home</a>
+        <a href="../projectoverview.html">Projects</a>
+        <a href="../contact.html">Contact</a>
+  </nav>
   <div class="container">
 
     <header>

@@ -64,12 +64,13 @@
             padding-top: 100px;
             color: white;
             text-align: center;
+            min-height: 100vh;
         }
 
         h1 {
             margin-top: 0;
             font-size: 3rem;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.75);
             padding: 5px 10px;
         }
 
@@ -78,28 +79,31 @@
             align-items: center;
             margin-top: 5px;
             margin-bottom: 10px;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
         }
 
         p {
             display: inline-flex;
             align-items: center;
             margin: 0;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
         }
 
-        .about-me-box {
-            display: inline-flex;
+        .box {
+            display: block;
             align-items: center;
             justify-content: center;
             flex-direction: column;
 
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.75);
             padding: 10px 20px;
             max-width: 400px;
             text-align: center;
-            margin-top: 5px;
+            margin: 5px auto 2em;
+            border-radius: 10px;
         }
+        
+
     </style>
 </head>
 
@@ -113,12 +117,21 @@
 
     <article class="all-browsers">
         <h1>Graham Gilbert-Schroeer</h1>
-        <div class = "about-me-box">
+        <div class = "box">
             <h2>About Me</h2>
-            <p>I am a first year Mechanical Engineering student at Northwestern University. </p>
+            <p>I am a first year Mechanical Engineering student at Northwestern University. I’ve always been fascinated by how things work for as long as I can remember. From building small projects to solving technical problems, I’m driven by curiosity and creativity, and I’m always excited to turn ideas into real-world solutions through engineering. </p>
+        </div>
+
+        <div class = "box">
+            <h2>Hobbies</h2>
+            <p>I love to play chess on my phone, recently school has taken all of my free time, but I still try to find time to play the best board game ever invented. </p>
+            <p style = "margin-top: 10px;">I also love to play the piano and saxophone. I have played the piano for 12 years, and the saxophone for 8. I want to increase my music repertoire so that when people ask for proof of my musical abilities, I can show them more than just a few polished songs.</p>
+        </div>
+
+        <div class = "box">
+            <h2>Goals</h2>
+            <p>My short term goal is to get an internship in the engineering field for the summer of 2025. My long term goal is to graduate from Northwestern University with a degree in Mechanical Engineering and work for myself. I have a couple patents that I am working on in hopes that they will change the world. When they're complete, I will add them here.</p>
         </div>
     </article>
-
 </body>
-
 </html>
