@@ -5,6 +5,44 @@
     <meta charset="UTF-8">
     <title>Projects Overview</title>
     <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: #111;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #111;
+            border-radius: 999px;
+            padding: 6px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav a:hover {
+            background-color: #111;
+            color: #fff;
+        }
+
         .default-browser {
             background-image: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg");
             background-size: cover;
@@ -12,26 +50,28 @@
             background-attachment: fixed;
             transition: filter 0.4s ease;
             min-height: 100vh;
+            padding-top: 100px;
         }
 
         h1 {
             text-align: center;
-            padding-top: 50px;
+            margin-top: 0;
+            padding-top: 10px;
             color: white;
             text-shadow: 2px 2px 4px #000000;
         }
 
-        ul {
+        .project-list {
             list-style-type: none;
             padding: 0;
         }
 
-        li {
+        .project-list li {
             margin: 40px 20px;
             text-align: left;
         }
 
-        a {
+        .project-list a {
             text-decoration: none;
             color: white;
             padding: 10px 15px;
@@ -41,7 +81,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        a:hover {
+        .project-list a:hover {
             background-color: rgba(255, 255, 255, 0.5);
             color: black;
         }
@@ -98,17 +138,21 @@
     </head>
 
     <body>
+        <nav class="top-nav">
+            <a href="frontpage.html">Home</a>
+            <a href="projectoverview.html">Projects</a>
+            <a href="contact.html">Contact</a>
+        </nav>
         <div class="default-browser">
-        <h1>Projects Table of Contents</h1>
-        <ul>
-            <li><a class="p1" href="/frontend/projects/Bad Mobile Game.html">Bad Mobile Game</a></li>
-            <li><a class="p2" href="/frontend/projects/Bartending App.html">Bartending App</a></li>
-            <li><a class="p3" href="/frontend/projects/Auto Ball Balancer.html">Auto Ball Balancer</a></li>
-            <li><a class="p4" href="/frontend/projects/Delta Arm.html">Delta Arm</a></li>
-            <li><a class="p5" href="/frontend/projects/Mishap D.html">Mishap D</a></li>
-            <li><a class="p6" href="/frontend/projects/Restaurant Scheduler.html">Restaurant Scheduler</a></li>
-            <li><a class="p7" href="/frontend/projects/Threaded Items Transfer System.html">Threaded Items Transfer System</a></li>
-        </ul>
-        
-    </div>
+            <h1>Projects Table of Contents</h1>
+            <ul class="project-list">
+                <li><a class="p1" href="/frontend/projects/Bad Mobile Game.html">Bad Mobile Game</a></li>
+                <li><a class="p2" href="/frontend/projects/Bartending App.html">Bartending App</a></li>
+                <li><a class="p3" href="/frontend/projects/Auto Ball Balancer.html">Auto Ball Balancer</a></li>
+                <li><a class="p4" href="/frontend/projects/Delta Arm.html">Delta Arm</a></li>
+                <li><a class="p5" href="/frontend/projects/Mishap D.html">Mishap D</a></li>
+                <li><a class="p6" href="/frontend/projects/Restaurant Scheduler.html">Restaurant Scheduler</a></li>
+                <li><a class="p7" href="/frontend/projects/Threaded Items Transfer System.html">Threaded Items Transfer System</a></li>
+            </ul>
+        </div>
 </body>
