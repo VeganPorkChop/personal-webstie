@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Restaurant Scheduler</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#e6ebef;
+      --border:#c6cad2;
+      --accent:#2563eb;
+
+      --code-bg:#0b1020;
+      --code-text:#e5e7eb;
+
+      --max: 980px;
+      --radius: 14px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.65;
+    }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    header{
+      text-align:center;
+      padding: 6px 0 18px;
+    }
+    header h1{
+      margin: 10px 0 6px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+    }
+    header p{
+      margin: 0 auto;
+      max-width: 85ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .pillbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top: 14px;
+    }
+    .pill{
+      font-size: 0.92rem;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    h2{
+      margin: 30px 0 10px;
+      font-size: 1.7rem;
+      letter-spacing: -0.01em;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 1.2rem;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 1.05rem;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .grid{ display:grid; gap: 14px; }
+    @media (min-width: 900px){
+      .grid.two{ grid-template-columns: 1fr 1fr; }
+    }
+
+    ul, ol{ margin: 8px 0 0 1.1rem; padding:0; }
+    li{ margin: 8px 0; }
+
+    .muted{ color: var(--muted); }
+
+    /* Media */
+    figure{ margin: 14px auto; text-align: center; }
+    figure img{
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    figcaption{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Tables */
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td{
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.98rem;
+    }
+    th{
+      background: #f3f4f6;
+      font-weight: 700;
+    }
+    tr:last-child td{ border-bottom: none; }
+
+    /* Details / Code */
+    details{
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+    details > summary{
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker{ display:none; }
+
+    details.code pre{
+      background: var(--code-bg);
+      color: var(--code-text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 10px 0 0;
+    }
+    pre code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      white-space: pre;
+      display: inline-block;
+      min-width: 100%;
+    }
+
+    .callout{
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin: 12px 0 0;
+    }
+
+    footer{
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Restaurant-Scheduler</h1>
+      <p>
+        A lightweight demo for managing restaurant shift schedules using a Hapi backend and a simple HTML frontend.
+        Availability and restaurant-specific shift configurations are stored as JSON under <code>data/</code>.
+      </p>
+
+      <div class="pillbar">
+        <div class="pill">Hapi API</div>
+        <div class="pill">JSON Data Store</div>
+        <div class="pill">Fair Scheduling</div>
+        <div class="pill">Owner Controls</div>
+      </div>
+    </header>
+
+    <h2>Overview</h2>
+    <div class="card">
+      <h3>Repository Purpose</h3>
+      <p>
+        This project provides a small but complete scheduling workflow for restaurant teams. It includes:
+        a backend API for building and serving schedules, and a set of frontend pages for staff and owners to
+        submit availability, view schedules, and update scheduling settings.
+      </p>
+
+      <div class="callout">
+        <strong>Data locations:</strong>
+        <ul>
+          <li><code>data/availability/</code> — availability submissions for schedule periods</li>
+          <li><code>data/restaurants/</code> — restaurant configurations (shifts, slots, roles, rules)</li>
+          <li><code>data/schedules/</code> — generated schedule outputs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Mission Statement</h3>
+      <p>
+        Provide restaurant teams with a clear, fair, and efficient scheduling workflow that balances staffing
+        needs with employee availability while keeping managers in control of key schedule rules and release timelines.
+      </p>
+    </div>
+
+    <h2>System Overview</h2>
+    <div class="card">
+      <h3>How It Works</h3>
+      <ol>
+        <li>
+          <strong>Configure the restaurant:</strong>
+          Each restaurant has a JSON configuration under <code>data/restaurants</code> that defines shift windows, roles,
+          slots, and scheduling requirements.
+        </li>
+        <li>
+          <strong>Collect availability:</strong>
+          Employees submit availability stored in <code>data/availability</code> for the relevant schedule period.
+        </li>
+        <li>
+          <strong>Generate schedules:</strong>
+          The generator combines shift definitions with the latest availability to produce
+          <code>data/schedules/&lt;restaurant&gt;.json</code>.
+        </li>
+        <li>
+          <strong>Distribute assignments fairly:</strong>
+          The generator balances assignments across eligible employees and can honor required shift counts and opening coverage.
+        </li>
+        <li>
+          <strong>Release schedules:</strong>
+          Owners configure a release day; the server rolls the next schedule into the live schedule on that day.
+        </li>
+      </ol>
+    </div>
+
+    <h2>Architecture</h2>
+    <div class="card">
+      <h3>Components</h3>
+
+      <div class="grid two">
+        <div class="card" style="margin:0;">
+          <h4>Backend</h4>
+          <ul>
+            <li><strong>Hapi server</strong> for schedule generation + retrieval endpoints</li>
+            <li>Optional API-triggered schedule builds</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin:0;">
+          <h4>Frontend</h4>
+          <ul>
+            <li><strong>HTML pages</strong> for dashboard, availability submission, and owner settings</li>
+            <li>Supports viewing schedules and owner adjustments</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin:0;">
+          <h4>Data Store</h4>
+          <ul>
+            <li>All state stored as <strong>JSON files</strong> under <code>data/</code></li>
+            <li>Simple, inspectable, and easy to version-control</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin:0;">
+          <h4>Scheduler</h4>
+          <ul>
+            <li><code>scripts/generateSchedule.js</code> builds schedules from config + availability</li>
+            <li>Callable via CLI or API</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Repository Map</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Path</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>backend/</code></td><td>Hapi API server and route handlers.</td></tr>
+          <tr><td><code>frontend/</code></td><td>UI pages, assets, and client-side logic.</td></tr>
+          <tr><td><code>data/availability/</code></td><td>Raw availability submissions.</td></tr>
+          <tr><td><code>data/restaurants/</code></td><td>Restaurant configuration files.</td></tr>
+          <tr><td><code>data/schedules/</code></td><td>Generated schedules.</td></tr>
+          <tr><td><code>scripts/</code></td><td>Scheduler and utility scripts.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Data Flow</h2>
+    <div class="card">
+      <ol>
+        <li><strong>Input:</strong> Restaurant config + employee availability.</li>
+        <li><strong>Processing:</strong> Scheduler assigns shifts while applying fairness and required shift constraints.</li>
+        <li><strong>Output:</strong> A schedule JSON file per restaurant, served to the dashboard.</li>
+      </ol>
+    </div>
+
+    <h2>API</h2>
+    <div class="card">
+      <h3>API Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/api/{restaurant}/schedule/build</code></td>
+            <td>Generate a new schedule.</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/api/{restaurant}/schedule</code></td>
+            <td>Fetch the current schedule.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Features</h2>
+    <div class="card">
+      <h3>Feature List</h3>
+      <ul>
+        <li>Restaurant-specific shift definitions and staffing levels.</li>
+        <li>Availability capture for each employee within a configurable time window.</li>
+        <li>Automated schedule generation with fairness balancing.</li>
+        <li>Required-shift rules (weekday/weekend or specific shift labels).</li>
+        <li>Optional opening coverage selection for early arrival needs.</li>
+        <li>Owner controls to adjust staffing levels and schedule cadence.</li>
+        <li>Dashboard support for viewing schedules and drag-and-drop adjustments.</li>
+        <li>Schedule settings for release cadence and availability window size.</li>
+        <li>On-demand schedule generation via script or API.</li>
+      </ul>
+    </div>
+
+    <h2>Documentation Timeline</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Milestone</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2024-05-15</td><td>Initial scheduling demo</td><td>Basic data model and schedule generator.</td></tr>
+          <tr><td>2024-06-01</td><td>Fairness balancing</td><td>Prioritize fewer assignments when eligible.</td></tr>
+          <tr><td>2024-07-10</td><td>Required shifts support</td><td>Add <code>requiredShifts</code> configuration.</td></tr>
+          <tr><td>2024-08-20</td><td>Opening staffing</td><td>Allow early arrival selection for openings.</td></tr>
+          <tr><td>2024-09-30</td><td>Owner controls</td><td>Schedule settings and release rules.</td></tr>
+          <tr><td>TBD</td><td>Documentation refresh</td><td>Expand usage examples and operational guides.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Current Problems & Planned Solutions</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Impact</th>
+            <th>Planned Solution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Limited visibility into scheduling rationale</td>
+            <td>Managers cannot easily explain why assignments happened</td>
+            <td>Add schedule audit metadata describing eligibility and selection weighting.</td>
+          </tr>
+          <tr>
+            <td>Manual data hygiene for availability submissions</td>
+            <td>Stale or incomplete availability causes gaps</td>
+            <td>Add validation and reminders for missing or outdated submissions.</td>
+          </tr>
+          <tr>
+            <td>No consolidated reporting</td>
+            <td>Owners lack insights into coverage trends</td>
+            <td>Add reporting endpoints for staffing coverage and assignment distribution.</td>
+          </tr>
+          <tr>
+            <td>Single-restaurant focus in UI</td>
+            <td>Multi-location operators need more context</td>
+            <td>Add a restaurant selector and shared overview dashboard.</td>
+          </tr>
+          <tr>
+            <td>No in-app notifications</td>
+            <td>Staff may miss schedule updates</td>
+            <td>Add email/SMS notifications on schedule release.</td>
+          </tr>
+          <tr>
+            <td>Manual testing workflow</td>
+            <td>Changes are hard to verify consistently</td>
+            <td>Add documented test checklist and smoke-test scripts.</td>
+          </tr>
+          <tr>
+            <td>Limited audit trail for changes</td>
+            <td>Hard to track edits after schedule creation</td>
+            <td>Add change log entries for owner edits.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Screenshots</h2>
+    <div class="card">
+    
+      <ul>
+        <li><strong>Dashboard</strong><br><span class="muted">Screenshot placeholder: <code>![Dashboard](path/to/dashboard.png)</code></span></li>
+        <li><strong>Schedule Settings</strong><br><span class="muted">Screenshot placeholder: <code>![Schedule Settings](path/to/settings.png)</code></span></li>
+        <li><strong>Availability Submission</strong><br><span class="muted">Screenshot placeholder: <code>![Availability Form](path/to/availability.png)</code></span></li>
+        <li><strong>Schedule View</strong><br><span class="muted">Screenshot placeholder: <code>![Schedule View](path/to/schedule.png)</code></span></li>
+        <li><strong>Shift Details Drawer</strong><br><span class="muted">Screenshot placeholder: <code>![Shift Details](path/to/shift-details.png)</code></span></li>
+        <li><strong>Owner Controls</strong><br><span class="muted">Screenshot placeholder: <code>![Owner Controls](path/to/owner-controls.png)</code></span></li>
+        <li><strong>Release Day Configuration</strong><br><span class="muted">Screenshot placeholder: <code>![Release Day](path/to/release-day.png)</code></span></li>
+      </ul>
+    </div>
+
+    <h2>Glossary</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Availability</td><td>Employee-provided time windows they can work.</td></tr>
+          <tr><td>Shift</td><td>A scheduled time block with required staffing.</td></tr>
+          <tr><td>Required shifts</td><td>Minimum counts of weekday, weekend, or labeled shifts.</td></tr>
+          <tr><td>Release day</td><td>Day of week when the next schedule becomes active.</td></tr>
+          <tr><td>Opening coverage</td><td>Early arrival staffing needs for a shift.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Schedule Builder</h2>
+    <div class="card">
+      <p>
+        The <code>scripts/generateSchedule.js</code> script builds a weekly schedule by combining the restaurant shift configuration
+        with the most recent availability submissions from employees. Generated schedules are written to
+        <code>data/schedules/&lt;restaurant&gt;.json</code>.
+      </p>
+
+      <h3>Fairness Balancing (v1.1)</h3>
+      <p>
+        Starting with version 1.1, the scheduler attempts to distribute shifts as evenly as possible across available employees.
+        When multiple workers are eligible for a shift, the algorithm favors those with fewer assignments for the week
+        (while still respecting any manager-specific requirements).
+      </p>
+
+      <h3>Required Shifts (v1.2)</h3>
+      <p>
+        Beginning in version 1.2, owners can define a <code>requiredShifts</code> map in the restaurant configuration to guarantee
+        each worker receives a minimum number of assignments. Keys can reference specific shift labels or the special values
+        <code>weekday</code> and <code>weekend</code>. After building an initial schedule, the generator makes a best effort to fill
+        remaining slots to meet these requirements.
+      </p>
+
+      <details class="code">
+        <summary>Example: requiredShifts configuration</summary>
+        <pre><code class="language-json">"requiredShifts": {
+  "weekday": 3,
+  "weekend": 1,
+  "closing": 2
+}</code></pre>
+      </details>
+
+      <h3>Opening Coverage</h3>
+      <p>
+        Shift definitions may include an optional <code>opening</code> block. When present, workers already assigned to the shift who
+        have opted into opening (<code>openShift: true</code> in their availability submission) are randomly selected to arrive early.
+      </p>
+
+      <details class="code">
+        <summary>Example: shift definition with opening</summary>
+        <pre><code class="language-json">"morning": {
+  "time": "9:00 AM–1:00 PM",
+  "slots": 4,
+  "roles": [ ... ],
+  "opening": { "hours": 2, "count": 1 }
+}</code></pre>
+      </details>
+
+      <h3>Run the Generator</h3>
+      <details class="code">
+        <summary>CLI usage</summary>
+        <pre><code class="language-bash">node scripts/generateSchedule.js Bizou</code></pre>
+      </details>
+
+      <details class="code">
+        <summary>API usage</summary>
+        <pre><code class="language-text">POST /api/{restaurant}/schedule/build
+GET  /api/{restaurant}/schedule</code></pre>
+      </details>
+
+      <div class="callout">
+        <strong>Note:</strong> The dashboard reads the existing schedule so everyone sees the same version.
+        Use the build endpoint (or the script) when you need to refresh the schedule.
+      </div>
+    </div>
+
+    <h2>Owner Controls</h2>
+    <div class="card">
+      <p>
+        User records can include an <code>owner</code> flag. Owners can rearrange workers via drag-and-drop and adjust staffing counts
+        per shift. They can also modify schedule frequency using the Schedule Settings page.
+      </p>
+
+      <h3>Restaurant Configuration Fields</h3>
+      <details class="code">
+        <summary>Schedule cadence settings</summary>
+        <pre><code class="language-text">schedulePeriodDays  - how far into the future the availability form should span
+scheduleReleaseDay  - the day of week (0=Sun) when the next schedule becomes active</code></pre>
+      </details>
+
+      <p>
+        When the current day matches <code>scheduleReleaseDay</code>, the server automatically rolls the <code>*-next.json</code> schedule
+        into the live schedule and begins building the following schedule period.
+      </p>
+
+      <div class="callout">
+        <strong>Settings workflow:</strong> From the dashboard, owners open <em>Schedule Settings</em> to update shift times,
+        adjust the number of future days requested on the availability form, and choose the release day for new schedules.
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        This project is incomplete but probabilty will never be completed. I have more ideas than time. If you find it useful,
+        please consider starring the repository on GitHub and adding a couple features!
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
