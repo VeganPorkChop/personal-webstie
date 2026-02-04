@@ -4,7 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Projects Overview</title>
+    <link rel="stylesheet" href="site-images.css">
     <style>
+        :root {
+            --projectoverview-default: none;
+            --projectoverview-p1: none;
+            --projectoverview-p2: none;
+            --projectoverview-p3: none;
+            --projectoverview-p4: none;
+            --projectoverview-p5: none;
+            --projectoverview-p6: none;
+            --projectoverview-p7: none;
+        }
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -44,7 +55,11 @@
         }
 
         .default-browser {
-            background: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg") no-repeat center center fixed;
+            background-color: #0b0b0b;
+            background-image: var(--projectoverview-default, none);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
             background-size: cover;
             position: fixed;
             inset: 0;
@@ -87,49 +102,49 @@
         }
 
         body:has(.p1:hover) .default-browser {
-            background-image: url(../images/projectoverview/BAD_MOBILE_GAME_BACKGROUND_IMAGE.png);
+            background-image: var(--projectoverview-p1, none);
             background-position: fixed;
             background-size: cover;
             min-height: 80vh;
         }
 
         body:has(.p2:hover) .default-browser {
-            background-image: url(../images/projectoverview/BARTENDING_APP_BACKGROUND_IMAGE.png);
+            background-image: var(--projectoverview-p2, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
         }
 
         body:has(.p3:hover) .default-browser {
-            background-image: url(../images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg);
+            background-image: var(--projectoverview-p3, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
         }
 
         body:has(.p4:hover) .default-browser {
-            background-image: url(../images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png);
+            background-image: var(--projectoverview-p4, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
         }
 
         body:has(.p5:hover) .default-browser {
-            background-image: url(../images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg);
+            background-image: var(--projectoverview-p5, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
         }
 
         body:has(.p6:hover) .default-browser {
-            background-image: url(../images/projectoverview/RESTAURANT_SCHEDULER_BACKGROUND_IMAGE.png);
+            background-image: var(--projectoverview-p6, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
         }
 
         body:has(.p7:hover) .default-browser {
-            background-image: url(../images/projectoverview/THREADED_ITEMS_TRANSFER_SYSTEM_BACKGROUND_IMAGE.png);
+            background-image: var(--projectoverview-p7, none);
             background-position: fixed;
             background-size: cover;
             min-height: 100vh;
@@ -139,20 +154,20 @@
 
     <body>
         <nav class="top-nav">
-            <a href="frontpage.html">Home</a>
+            <a href="index.html">Home</a>
             <a href="projectoverview.html">Projects</a>
             <a href="contact.html">Contact</a>
         </nav>
         <div class="default-browser">
             <h1>Projects Table of Contents</h1>
             <ul class="project-list">
-                <li><a class="p1" href="/frontend/projects/Bad Mobile Game.html">Bad Mobile Game</a></li>
-                <li><a class="p2" href="/frontend/projects/Bartending App.html">Bartending App</a></li>
-                <li><a class="p3" href="/frontend/projects/Auto Ball Balancer.html">Auto Ball Balancer</a></li>
-                <li><a class="p4" href="/frontend/projects/Delta Arm.html">Delta Arm</a></li>
-                <li><a class="p5" href="/frontend/projects/Mishap D.html">Mishap D</a></li>
-                <li><a class="p6" href="/frontend/projects/Restaurant Scheduler.html">Restaurant Scheduler</a></li>
-                <li><a class="p7" href="/frontend/projects/Threaded Items Transfer System.html">Threaded Items Transfer System</a></li>
+                <li><a class="p1" href="projects/Bad Mobile Game.html">Bad Mobile Game</a></li>
+                <li><a class="p2" href="projects/Bartending App.html">Bartending App</a></li>
+                <li><a class="p3" href="projects/Auto Ball Balancer.html">Auto Ball Balancer</a></li>
+                <li><a class="p4" href="projects/Delta Arm.html">Delta Arm</a></li>
+                <li><a class="p5" href="projects/Mishap D.html">Mishap D</a></li>
+                <li><a class="p6" href="projects/Restaurant Scheduler.html">Restaurant Scheduler</a></li>
+                <li><a class="p7" href="projects/Threaded Items Transfer System.html">Threaded Items Transfer System</a></li>
             </ul>
         </div>
 </body>
