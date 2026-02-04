@@ -1,18 +1,13 @@
 :root {
-  /*
-    Provide externally hosted image URLs here. GitHub Pages cannot serve binary files
-    that are blocked by your current workflow, so host images on another service
-    (GitHub Releases, Cloudinary, S3, etc.) and paste the URLs below.
-  */
-  --frontpage-image: none;
-  --contact-background: none;
+  --frontpage-image: url("../images/frontpage/FRONTPAGE_BACKGROUND.JPG");
+  --contact-background: url("../images/contactpage/CONTACT_PAGE_BACKGROUND.jpeg");
 
-  --projectoverview-default: none;
-  --projectoverview-p1: none;
-  --projectoverview-p2: none;
-  --projectoverview-p3: none;
-  --projectoverview-p4: none;
-  --projectoverview-p5: none;
-  --projectoverview-p6: none;
-  --projectoverview-p7: none;
+  --projectoverview-default: url("../images/projectoverview/PROJECT_OVERVIEW_BACKGROUND.jpg");
+  --projectoverview-p1: url("../images/projectoverview/BAD_MOBILE_GAME_BACKGROUND_IMAGE.png");
+  --projectoverview-p2: url("../images/projectoverview/BARTENDING_APP_BACKGROUND_IMAGE.png");
+  --projectoverview-p3: url("../images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg");
+  --projectoverview-p4: url("../images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png");
+  --projectoverview-p5: url("../images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg");
+  --projectoverview-p6: url("../images/projectoverview/RESTAURANT_SCHEDULER_BACKGROUND_IMAGE.png");
+  --projectoverview-p7: url("../images/projectoverview/THREADED_ITEMS_TRANSFER_SYSTEM_BACKGROUND_IMAGE.png");
 }
