@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Contact Me</title>
+    <link rel="stylesheet" href="site-images.css">
     <style>
+        :root {
+            --contact-background: none;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-image:url(../images/contactpage/CONTACT_PAGE_BACKGROUND.jpeg);
+            background-color: #1f1a2b;
+            background-image:url(var(--contact-background, none));
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -94,7 +99,7 @@
 
 <body>
     <nav class="top-nav">
-        <a href="frontpage.html">Home</a>
+        <a href="index.html">Home</a>
         <a href="projectoverview.html">Projects</a>
         <a href="contact.html">Contact</a>
     </nav>

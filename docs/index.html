@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <title>Graham Gilbert-Schroeer</title>
 
+    <link rel="stylesheet" href="site-images.css">
     <style>
+        :root {
+            --frontpage-image: none;
+        }
         /* RESET */
         body {
             margin: 0;
@@ -57,7 +61,8 @@
 
         /* HERO / BACKGROUND */
         .all-browsers {
-            background-image: url("../images/frontpage/FRONTPAGE_BACKGROUND.JPG");
+            background-color: #111;
+            background-image: var(--frontpage-image, none);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -106,7 +111,7 @@
 <body>
 
     <nav class="top-nav">
-        <a href="frontpage.html">Home</a>
+        <a href="index.html">Home</a>
         <a href="projectoverview.html">Projects</a>
         <a href="contact.html">Contact</a>
     </nav>
