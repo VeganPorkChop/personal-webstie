@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BartendingApp – Full Documentation</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#e6ebef;
+      --border:#c6cad2;
+      --accent:#2563eb;
+
+      --code-bg:#0b1020;
+      --code-text:#e5e7eb;
+
+      --max: 980px;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin: 30px 0 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+        "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    /* Header / Hero */
+    header{
+      text-align: center;
+      padding: 18px 0 10px;
+    }
+    header h1{
+      margin: 14px 0 6px;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      letter-spacing: -0.02em;
+    }
+    header p{
+      margin: 0 auto;
+      max-width: 80ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    /* Cards */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    /* Section titles */
+    h2{
+      margin: 30px 0 10px;
+      font-size: 1.6rem;
+      letter-spacing: -0.01em;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 1.2rem;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 1.05rem;
+      color: #111827;
+    }
+
+    .lead{
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Lists */
+    ul{
+      margin: 8px 0 0 1.1rem;
+      padding: 0;
+    }
+    ol{
+      margin: 8px 0 0 1.2rem;
+      padding: 0;
+    }
+    li{ margin: 8px 0; }
+
+    /* Callouts */
+    .callout{
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: #eff6ff;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+    .callout strong{ display: inline-block; margin-bottom: 4px; }
+
+    /* Code */
+    pre{
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 14px 14px;
+      border-radius: 12px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin: 12px 0 0;
+    }
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .small{ font-size: 0.95rem; color: var(--muted); }
+
+    /* Footer */
+    footer{
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Top nav (matches your Delta Arm docs style) */
+    .top-nav{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 12px 0;
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    .top-nav a{
+      text-decoration: none;
+      color: #111;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #111;
+      border-radius: 999px;
+      padding: 6px 18px;
+      transition: all 0.3s ease;
+    }
+    .top-nav a:hover{
+      background-color: #111;
+      color: #fff;
+    }
+
+    /* In-page section links */
+    .toc{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin: 14px 0 6px;
+    }
+    .toc a{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:6px 12px;
+      font-weight:600;
+      color:#111;
+    }
+    .toc a:hover{ background:#111; color:#fff; text-decoration:none; }
+
+    /* Tiny chips */
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:0.95rem;
+      background:#fff;
+    }
+
+    /* Anchor offset so fixed nav doesn't cover headings */
+    .anchor{
+      scroll-margin-top: 90px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="top-nav">
+    <a href="../frontpage.html">Home</a>
+    <a href="../projectoverview.html">Projects</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+
+  <div class="container">
+
+    <header>
+      <h1>BartendingApp</h1>
+      <p>
+        <strong>Full documentation</strong> for an Android application in Java that lists standard cocktails with search and favorites.
+        It also supports admin-created bundles, bundle ratings/reviews, recipe translation (Spanish/French/Italian),
+        tutorial video assets, and optional monetization via AdMob.
+      </p>
+
+      <div class="toc">
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#build">Building</a>
+        <a href="#videos">Adding Videos</a>
+        <a href="#bundles">Bundles & Reviews</a>
+        <a href="#timeline">Timeline Progress</a>
+        <a href="#monetization">Monetization</a>
+        <a href="#qa">Testing & QA</a>
+        <a href="#openq">Open Questions</a>
+      </div>
+
+      <p class="lead">
+        This page intentionally includes both: (1) the general BartendingApp repo documentation and (2) the complete
+        <em>Timeline Progress: Use Case &amp; Future Ideas</em> spec, since that feature is part of the app’s documentation set.
+      </p>
+    </header>
+
+    <!-- ========================= -->
+    <!-- App Overview -->
+    <!-- ========================= -->
+    <section class="card anchor" id="overview">
+      <h2>Overview</h2>
+      <p>
+        BartendingApp is an Android (Java) application that helps users browse classic cocktails, learn recipes,
+        favorite drinks, and explore curated bundles. Admins can publish custom drink bundles, and users can rate and review them.
+        The app includes a placeholder for tutorial videos and supports translating drink details into Spanish, French, or Italian.
+      </p>
+
+      <div class="callout">
+        <strong>Documentation included</strong>
+        <p class="small" style="margin:0;">
+          This page covers the entire repo documentation including the Timeline Progress feature spec, build instructions,
+          asset workflows (videos), monetization setup (AdMob), and admin bundle controls.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Features -->
+    <!-- ========================= -->
+    <section class="card anchor" id="features">
+      <h2>Features</h2>
+      <ul>
+        <li>Browse a list of standard drinks.</li>
+        <li>Search by drink name.</li>
+        <li>View details for each drink including ingredients, instructions, and a placeholder for a tutorial video.</li>
+        <li>Mark drinks as favorites and view them in a separate list.</li>
+        <li>Admins can create or delete custom drink bundles that appear alongside built-in recipes.</li>
+        <li>Users can rate and review each bundle.</li>
+        <li>Translate drink details into Spanish, French, or Italian.</li>
+      </ul>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Building -->
+    <!-- ========================= -->
+    <section class="card anchor" id="build">
+      <h2>Building</h2>
+      <p>
+        Open the project in Android Studio to build and run on an emulator or device.
+      </p>
+
+      <h3>Command Line Build</h3>
+      <p>
+        Run:
+        <code>./gradlew assembleDebug</code>
+      </p>
+
+      <h3>Troubleshooting</h3>
+      <ul>
+        <li>
+          If you see an error about a missing wrapper jar, run <code>gradle wrapper</code> once to generate it.
+        </li>
+        <li>
+          If the Android Gradle plugin cannot be downloaded, ensure you have network access to Google and Maven repositories
+          or install the dependencies manually.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Adding Videos -->
+    <!-- ========================= -->
+    <section class="card anchor" id="videos">
+      <h2>Adding Videos</h2>
+      <ol>
+        <li>Place tutorial videos in <code>app/src/main/assets/videos/</code></li>
+        <li>Update <code>DrinkData.java</code> with the file names</li>
+      </ol>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Bundles & Reviews -->
+    <!-- ========================= -->
+    <section class="card anchor" id="bundles">
+      <h2>Bundles and Reviews</h2>
+      <ol>
+        <li>Set <code>Admin.IS_ADMIN</code> to <code>true</code> in <code>Admin.java</code> to enable the Create Bundle button.</li>
+        <li>Use the bundle editor to add name, ingredients, instructions, images, and videos for a new drink.</li>
+        <li>
+          Published bundles appear in the main list; select one to see details, delete it (admin only),
+          and submit a rating or review.
+        </li>
+      </ol>
+
+      <div class="callout">
+        <strong>Admin-only behavior</strong>
+        <p class="small" style="margin:0;">
+          Admin actions (create/delete/publish) should not be accessible to non-admin users. Timeline Progress also includes admin-only events.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Timeline Progress (FULL SPEC) -->
+    <!-- ========================= -->
+    <section class="card anchor" id="timeline">
+      <h2>Timeline Progress: Use Case &amp; Future Ideas</h2>
+
+      <h3>Overview</h3>
+      <p>
+        The <strong>Timeline Progress</strong> feature tracks a user’s journey through cocktail learning, bundle completion,
+        and tasting milestones. It creates a chronological story of growth, highlights achievements, and helps users understand
+        what they have learned, created, and reviewed over time.
+      </p>
+      <p class="small">
+        This document covers the end-to-end use case, product expectations, UX flows, content strategy,
+        data considerations, analytics, and future ideas to expand the feature.
+      </p>
+
+      <h3>Goals</h3>
+      <ul>
+        <li><strong>Motivate learning</strong> by showing visible progress.</li>
+        <li><strong>Surface context</strong> for favorites, bundles, and reviews chronologically.</li>
+        <li><strong>Enable reflection</strong> with a historical view of practice and mastery.</li>
+        <li><strong>Improve retention</strong> with reminders and achievable milestones.</li>
+        <li><strong>Reinforce confidence</strong> by highlighting concrete wins and streaks.</li>
+      </ul>
+
+      <h3>Non-Goals</h3>
+      <ul>
+        <li>Replace core browsing or search flows.</li>
+        <li>Serve as a social feed (for now).</li>
+        <li>Provide real-time coaching (future enhancement).</li>
+      </ul>
+
+      <h3>Primary Use Case</h3>
+      <h4>User Story</h4>
+      <div class="callout">
+        <strong>As a bartender-in-training...</strong>
+        <p class="small" style="margin:0;">
+          I want to see a timeline of my practice and learning so I can track which cocktails I’ve tried,
+          which bundles I’ve completed, and how my skills evolve over time.
+        </p>
+      </div>
+
+      <h4>Key Outcomes</h4>
+      <ul>
+        <li>Users feel encouraged to continue learning and mixing.</li>
+        <li>Users can revisit past practice sessions or bundles for review.</li>
+        <li>Users can discover gaps (e.g., no progress for 2 weeks) and re-engage.</li>
+        <li>Users have a reliable, long-term record of activities and milestones.</li>
+      </ul>
+
+      <h3>Persona Examples</h3>
+      <ul>
+        <li><strong>Beginner Enthusiast:</strong> Wants guidance and a sense of progression.</li>
+        <li><strong>Home Bartender:</strong> Tracks favorites and tries new recipes every week.</li>
+        <li><strong>Bundle Creator (Admin):</strong> Uses timeline to see how new bundles impact engagement.</li>
+        <li><strong>Curious Explorer:</strong> Uses translations and notes to learn terminology.</li>
+      </ul>
+
+      <h3>User Journey Examples</h3>
+
+      <h4>Journey 1: First Week</h4>
+      <ol>
+        <li>User favorites a Mojito.</li>
+        <li>User views Mojito details and taps “Made It.”</li>
+        <li>Timeline shows “First Cocktail Made” milestone.</li>
+        <li>User completes a starter bundle.</li>
+        <li>Timeline shows bundle completion and a 3-day streak.</li>
+      </ol>
+
+      <h4>Journey 2: Returning User</h4>
+      <ol>
+        <li>User returns after 2 weeks of inactivity.</li>
+        <li>Timeline highlights last completed drink and suggests a related recipe.</li>
+        <li>User translates a recipe to Spanish and adds a tasting note.</li>
+        <li>Timeline reflects translation usage and notes activity.</li>
+      </ol>
+
+      <h4>Journey 3: Admin Flow</h4>
+      <ol>
+        <li>Admin publishes a themed bundle.</li>
+        <li>Admin timeline includes “Bundle Published” event.</li>
+        <li>Admin can see review submissions as follow-up events.</li>
+      </ol>
+
+      <h3>Timeline Events</h3>
+      <p class="lead">Each entry represents a significant user action or milestone.</p>
+
+      <h4>Core Event Types</h4>
+      <div class="chips">
+        <span class="chip">Recipe Viewed</span>
+        <span class="chip">Recipe Completed</span>
+        <span class="chip">Bundle Started/Completed</span>
+        <span class="chip">Favorite Added/Removed</span>
+        <span class="chip">Review Submitted</span>
+        <span class="chip">Language Translation Used</span>
+        <span class="chip">Note Added</span>
+      </div>
+
+      <h4>Admin-Only Events</h4>
+      <div class="chips">
+        <span class="chip">Bundle Published</span>
+        <span class="chip">Bundle Removed</span>
+      </div>
+
+      <h4>Optional/Derived Events</h4>
+      <div class="chips">
+        <span class="chip">Streak Achieved</span>
+        <span class="chip">Milestone Reached</span>
+        <span class="chip">Category Mastery</span>
+      </div>
+
+      <h3>UX Flow</h3>
+      <ol>
+        <li><strong>Entry Point:</strong> Timeline is accessible from main navigation (e.g., “Progress”).</li>
+        <li><strong>Summary Header:</strong>
+          <ul>
+            <li>Total recipes tried.</li>
+            <li>Active streak length.</li>
+            <li>Last activity date.</li>
+            <li>Top category or most-made drink.</li>
+          </ul>
+        </li>
+        <li><strong>Timeline Feed:</strong>
+          <ul>
+            <li>Scrollable list grouped by date.</li>
+            <li>Entries include icon, label, timestamp, and optional notes.</li>
+            <li>Color-coded event types (favorites, completions, reviews).</li>
+          </ul>
+        </li>
+        <li><strong>Detail View:</strong>
+          <ul>
+            <li>Tap an event to revisit the drink or bundle detail screen.</li>
+            <li>Long-press to reveal actions (copy note, share, hide entry).</li>
+          </ul>
+        </li>
+        <li><strong>Filters &amp; Search:</strong>
+          <ul>
+            <li>Filter by event type (Completed, Reviewed, Favorited).</li>
+            <li>Search by drink name or bundle name.</li>
+          </ul>
+        </li>
+        <li><strong>Empty State:</strong> Friendly CTA explaining how to start making cocktails.</li>
+      </ol>
+
+      <h3>Content &amp; Copy Guidelines</h3>
+      <ul>
+        <li>Use celebratory but concise language (e.g., “You made your first Mojito!”).</li>
+        <li>Avoid shaming for inactivity; instead highlight the last positive action.</li>
+        <li>Keep entries skimmable: 1-line title + optional 1-line detail.</li>
+        <li>Respect localization; avoid slang that is hard to translate.</li>
+      </ul>
+
+      <h3>Data &amp; Storage</h3>
+      <h4>Event Schema (Example)</h4>
+      <pre><code class="language-json">{
+  "event_id": "UUID",
+  "user_id": "String",
+  "event_type": "Enum",
+  "timestamp": "ISO 8601",
+  "entity_id": "Drink or bundle ID",
+  "metadata": {
+    "rating": "number (optional)",
+    "translation_language": "string (optional)",
+    "notes": "string (optional)",
+    "streak_count": "number (optional)"
+  },
+  "source": "manual | auto | admin"
+}</code></pre>
+
+      <h4>Event Generation Rules</h4>
+      <ul>
+        <li><strong>Recipe Viewed:</strong> Only record if viewed &gt; X seconds.</li>
+        <li><strong>Recipe Completed:</strong> Requires explicit “Made It.”</li>
+        <li><strong>Favorites:</strong> Emit on change to avoid duplicate events.</li>
+        <li><strong>Reviews:</strong> Include rating score in metadata.</li>
+        <li><strong>Translations:</strong> Include language code in metadata.</li>
+      </ul>
+
+      <h4>Storage Model</h4>
+      <ul>
+        <li>Local first (Room) with optional sync later.</li>
+        <li>Store minimal data in the event; read titles from source entities.</li>
+        <li>Cache lightweight event summaries for fast timeline rendering.</li>
+      </ul>
+
+      <h4>Aggregations</h4>
+      <ul>
+        <li><strong>Weekly/Monthly Trends:</strong> Count of new completed recipes.</li>
+        <li><strong>Streaks:</strong> Consecutive days with at least one completed recipe.</li>
+        <li><strong>Top Categories:</strong> Most viewed spirit types or bundle themes.</li>
+        <li><strong>Skill Velocity:</strong> Number of new recipes per week.</li>
+      </ul>
+
+      <h3>Progress States &amp; Milestones</h3>
+      <p>Progress is visualized using milestones:</p>
+      <ul>
+        <li><strong>First Cocktail Made</strong></li>
+        <li><strong>First Bundle Completed</strong></li>
+        <li><strong>5/10/25/50 Cocktails</strong></li>
+        <li><strong>First Review Submitted</strong></li>
+        <li><strong>First Translation Used</strong></li>
+        <li><strong>First Tasting Note Added</strong></li>
+      </ul>
+      <p class="small">
+        Each milestone creates a timeline event and optionally unlocks a badge.
+      </p>
+
+      <h3>Edge Cases &amp; Constraints</h3>
+      <ul>
+        <li><strong>Offline Mode:</strong> Events are queued locally and synced later.</li>
+        <li><strong>Duplicate Events:</strong> Prevent multiple “Made It” events within a short window.</li>
+        <li><strong>Time Zone:</strong> Display events in user’s local time.</li>
+        <li><strong>Admin vs User Events:</strong> Admin-only events appear only for admins.</li>
+        <li><strong>Deleted Bundles:</strong> Timeline entries show “Archived Bundle” if source is deleted.</li>
+        <li><strong>Device Migration:</strong> Show last sync time and explain missing history.</li>
+      </ul>
+
+      <h3>Metrics &amp; Analytics</h3>
+      <ul>
+        <li>Timeline screen views per user.</li>
+        <li>Conversion from timeline entry → recipe detail view.</li>
+        <li>Event frequency by type (favorites vs completions).</li>
+        <li>Retention impact from timeline streaks.</li>
+        <li>Average time between events (cadence of engagement).</li>
+        <li>Completion rate from bundle start → bundle complete.</li>
+      </ul>
+
+      <h3>Accessibility Considerations</h3>
+      <ul>
+        <li>Icons paired with text labels.</li>
+        <li>High-contrast timeline markers.</li>
+        <li>Screen reader announces event type, date, and drink/bundle name.</li>
+        <li>Option to switch to “list view” for reduced motion.</li>
+        <li>Tap targets large enough for thumb navigation.</li>
+      </ul>
+
+      <h3>Privacy &amp; Safety</h3>
+      <ul>
+        <li>Timeline is private by default; sharing is explicit.</li>
+        <li>Allow users to hide or delete entries.</li>
+        <li>Avoid recording sensitive data in metadata.</li>
+        <li>For admin events, avoid exposing private management data to non-admins.</li>
+      </ul>
+
+      <h3 id="qa" class="anchor">Testing &amp; QA Scenarios</h3>
+      <ul>
+        <li>Add timeline events for each core action (favorite, made it, review).</li>
+        <li>Confirm date grouping and time-zone conversion.</li>
+        <li>Validate filters and search across multiple event types.</li>
+        <li>Ensure offline actions sync correctly.</li>
+        <li>Verify empty state and first-use milestone.</li>
+      </ul>
+
+      <h3>Future Ideas</h3>
+      <h4>Short-Term Enhancements</h4>
+      <ul>
+        <li><strong>Milestone Badges:</strong> Add a badge cabinet for achievements.</li>
+        <li><strong>Sharing:</strong> Share milestones (“Made 10 cocktails!”) to social media.</li>
+        <li><strong>Weekly Recap:</strong> Summary card for last 7 days.</li>
+        <li><strong>Notes Field:</strong> Allow user to add tasting notes per recipe.</li>
+        <li><strong>Contextual Tips:</strong> Show short tips related to recent events.</li>
+      </ul>
+
+      <h4>Mid-Term Enhancements</h4>
+      <ul>
+        <li><strong>Personalized Suggestions:</strong> Use timeline data to recommend new cocktails.</li>
+        <li><strong>Difficulty Levels:</strong> Track progress from beginner to advanced recipes.</li>
+        <li><strong>Taste Profile Evolution:</strong> Show how preferences change over time (sweet → bitter).</li>
+        <li><strong>Bundle Challenges:</strong> Timed challenges with a deadline.</li>
+        <li><strong>Streak Rewards:</strong> Unlock recipes or visuals based on streaks.</li>
+      </ul>
+
+      <h4>Long-Term Vision</h4>
+      <ul>
+        <li><strong>Collaborative Timelines:</strong> Friends can share progress or co-complete bundles.</li>
+        <li><strong>Event Calendar Integration:</strong> Plan cocktail nights and sync reminders.</li>
+        <li><strong>AI Practice Coach:</strong> Suggest practice routines based on gaps.</li>
+        <li><strong>Vendor Partnerships:</strong> Offer ingredient kits tied to timeline milestones.</li>
+        <li><strong>Community Benchmarks:</strong> Anonymous comparison for motivation.</li>
+      </ul>
+
+      <h3>Implementation Notes</h3>
+      <ul>
+        <li>Start with a local persistence layer (e.g., Room) and add optional sync later.</li>
+        <li>Reuse existing drink and bundle IDs for references.</li>
+        <li>Ensure timeline entries are created in all existing flows (favorites, reviews, bundle creation).</li>
+        <li>Keep the data model extensible for new event types.</li>
+        <li>Consider a background worker for aggregation and streak calculations.</li>
+      </ul>
+
+      <h3 class="anchor" id="openq">Open Questions</h3>
+      <ul>
+        <li>Should users manually mark a recipe as “Made It” or infer from time-on-screen?</li>
+        <li>Do we allow users to delete or edit timeline entries?</li>
+        <li>How should timeline events appear if the user switches devices?</li>
+        <li>Should the timeline show failures (e.g., “attempted” recipes)?</li>
+      </ul>
+
+      <h3>Summary</h3>
+      <p>
+        The Timeline Progress feature turns the BartendingApp into a continuous learning journey, reinforcing engagement and surfacing meaningful milestones.
+        It can start as a lightweight activity feed and evolve into a personalized coaching timeline with achievements, streaks, and community sharing.
+      </p>
+    </section>
+
+    <!-- ========================= -->
+    <!-- Monetization -->
+    <!-- ========================= -->
+    <section class="card anchor" id="monetization">
+      <h2>Monetization (AdMob Banner)</h2>
+      <p class="lead">To earn revenue by showing an ad at the bottom of the screen:</p>
+
+      <ol>
+        <li>Sign up for Google AdMob and create a banner ad unit.</li>
+        <li>Add the Mobile Ads SDK to your module <code>build.gradle</code>:</li>
+      </ol>
+
+      <pre><code class="language-gradle">implementation 'com.google.android.gms:play-services-ads:22.6.0'</code></pre>
+
+      <h3>AndroidManifest.xml</h3>
+      <pre><code class="language-xml">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/&gt;
+
+&lt;meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-2768983520806926~9920400584"/&gt;</code></pre>
+
+      <h3>MainActivity Initialization</h3>
+      <pre><code class="language-java">MobileAds.initialize(this);</code></pre>
+
+      <h3>activity_main.xml AdView</h3>
+      <pre><code class="language-xml">&lt;com.google.android.gms.ads.AdView
+    android:id="@+id/adView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    ads:adSize="BANNER"
+    ads:adUnitId="ca-app-pub-2768983520806926/2820639760" /&gt;</code></pre>
+
+      <h3>Load an Ad</h3>
+      <pre><code class="language-java">AdView adView = findViewById(R.id.adView);
+adView.loadAd(new AdRequest.Builder().build());</code></pre>
+    </section>
+
+  </div>
+</body>
+</html>
