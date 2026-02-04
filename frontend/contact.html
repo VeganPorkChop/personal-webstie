@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Me</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-image:url(../images/contactpage/CONTACT_PAGE_BACKGROUND.jpeg);
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: #111;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #111;
+            border-radius: 999px;
+            padding: 6px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav a:hover {
+            background-color: #111;
+            color: #fff;
+        }
+
+        .page-content {
+            padding-top: 100px;
+        }
+
+        .contact-card {
+            width: 290px;
+            border: 4px solid rgb(78, 42, 132);
+            border-radius: 15px;
+            background-color: rgba(182, 172, 209, 0.8);
+            padding: 5px 15px;
+            margin: 20px 10px;
+        }
+
+        .contact-card h1 {
+            color: rgb(78, 42, 132);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .contact-card p {
+            text-align: left;
+            color: rgb(78, 42, 132);
+            margin: 18px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .contact-card a {
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+            font-size: .7rem;
+            padding: 8px 10px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            background-color: rgba(147, 128, 182, 0.8);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .contact-card a:hover {
+            background-color: rgb(182, 172, 209);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="top-nav">
+        <a href="frontpage.html">Home</a>
+        <a href="projectoverview.html">Projects</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <div class="page-content">
+        <div class="contact-card">
+            <h1>Contact Me</h1>
+            <p>Email: <br><a href="mailto:grahamgilbert-schroeer2029@u.northwestern.edu">grahamgilbert-schroeer2029@u.northwestern.edu</a></p>
+            <p>LinkedIn: <br><a href="https://www.linkedin.com/in/graham-gilbert-schroeer-8003363a4/">www.linkedin.com/in/graham-gilbert-schroeer</a></p>
+            <p>GitHub: <br><a href="https://github.com/VeganPorkChop">github.com/VeganPorkChop</a></p>
+            <p>Phone: <br><a href="tel:(434) 305-8161">(434) 305-8161</a></p>
+        </div>
+    </div>
+</body>
