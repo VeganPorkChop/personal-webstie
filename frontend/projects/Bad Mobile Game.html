@@ -1,5 +1,474 @@
-<nav class="top-nav">
-        <a href="../frontpage.html">Home</a>
-        <a href="../projectoverview.html">Projects</a>
-        <a href="../contact.html">Contact</a>
-    </nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pathfinder Puzzle</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --card:#e6ebef;
+      --border:#c6cad2;
+      --accent:#2563eb;
+
+      --code-bg:#0b1020;
+      --code-text:#e5e7eb;
+
+      --max: 980px;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin: 30px 0 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    /* Header / Hero */
+    header{
+      text-align: center;
+      padding: 18px 0 10px;
+    }
+    header h1{
+      margin: 14px 0 6px;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      letter-spacing: -0.02em;
+    }
+    header p{
+      margin: 0 auto;
+      max-width: 70ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    /* Cards */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    /* Section titles */
+    h2{
+      margin: 30px 0 10px;
+      font-size: 1.6rem;
+      letter-spacing: -0.01em;
+    }
+    h3{
+      margin: 18px 0 8px;
+      font-size: 1.2rem;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 1.05rem;
+      color: #111827;
+    }
+
+    .lead{
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Media */
+    figure{
+      margin: 14px auto;
+      text-align: center;
+    }
+    figure img{
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    figcaption{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Lists */
+    ul{
+      margin: 8px 0 0 1.1rem;
+      padding: 0;
+    }
+    li{ margin: 8px 0; }
+
+    /* Callouts */
+    .callout{
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: #eff6ff;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+    .callout strong{ display: inline-block; margin-bottom: 4px; }
+
+    /* Code */
+    pre{
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 14px 14px;
+      border-radius: 12px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin: 12px 0 0;
+    }
+    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .small{ font-size: 0.95rem; color: var(--muted); }
+
+    /* Footer */
+    footer{
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 12px 0;
+      background-color: rgba(255, 255, 255, 0.95);
+      z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      color: #111;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #111;
+      border-radius: 999px;
+      padding: 6px 18px;
+      transition: all 0.3s ease;
+    }
+
+    .top-nav a:hover {
+      background-color: #111;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <a href="#overview">Overview</a>
+    <a href="#setup">Setup</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#config">Config</a>
+    <a href="#gameplay">Gameplay</a>
+    <a href="#release">Release</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>Pathfinder Puzzle</h1>
+      <p>
+        A compact Android sliding-tile puzzle built with Jetpack Compose. Rearrange numbered tiles to re-form a winding path
+        with touch-friendly controls and offline play.
+      </p>
+      <p class="lead">This page summarizes the current repository state, build instructions, architecture guidance, and release notes.</p>
+    </header>
+
+    <section id="overview">
+      <h2>Project Overview</h2>
+      <div class="card">
+        <p>
+          <strong>Pathfinder Puzzle</strong> is intended to be a lightweight Android puzzle game built with Jetpack Compose.
+          The app presents a sliding-tile board where players rearrange numbered tiles to re-form a contiguous, winding path.
+          The repository currently contains Android module scaffolding and Gradle configuration required to build the app.
+        </p>
+
+        <h3>Goals</h3>
+        <ul>
+          <li>Provide a lightweight, offline-friendly puzzle game.</li>
+          <li>Keep the UI focused on touch-friendly controls.</li>
+          <li>Make the project easy to extend with new board sizes, color themes, and rule variations.</li>
+        </ul>
+
+        <h3>Current Repository State</h3>
+        <ul>
+          <li><strong>Android app module:</strong> Configured for Compose and Material 3.</li>
+          <li><strong>Manifest:</strong> <code>AndroidManifest.xml</code> defines the application entry point.</li>
+          <li><strong>Gradle configuration:</strong> Version catalog values live in <code>gradle.properties</code>, while plugin and repository configuration are in <code>settings.gradle</code>.</li>
+        </ul>
+
+        <div class="callout">
+          <strong>Next documentation stops</strong>
+          <div>
+            If you are setting up the project locally, start with <a href="#setup">Setup &amp; Build</a>.
+            If you are adding new gameplay features or UI, read <a href="#architecture">Architecture Notes</a> for suggested layout and conventions.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="setup">
+      <h2>Setup &amp; Build</h2>
+      <div class="card">
+        <p>This project is an Android application module. The instructions below cover the baseline requirements for building and running the app.</p>
+
+        <h3>Prerequisites</h3>
+        <ul>
+          <li>Android Studio Flamingo or newer.</li>
+          <li>Android SDK with <code>compileSdk 34</code> installed.</li>
+          <li>JDK 17 (Android Studio bundles a compatible JDK).</li>
+        </ul>
+
+        <h3>Initial setup</h3>
+        <ul>
+          <li>Open the repository in Android Studio.</li>
+          <li>Allow Gradle to sync and download dependencies.</li>
+          <li>Confirm the Compose compiler version is set via <code>compose_ui_version</code> in <code>gradle.properties</code>.</li>
+        </ul>
+
+        <h3>Common Gradle commands</h3>
+        <p class="small">Run these from the repository root:</p>
+        <pre><code>./gradlew assembleDebug
+./gradlew test
+./gradlew lint</code></pre>
+
+        <h3>Running on a device</h3>
+        <ul>
+          <li>Create or start an Android emulator (API 24+ recommended).</li>
+          <li>Select the device in Android Studio.</li>
+          <li>Click Run to install and launch the app.</li>
+        </ul>
+
+        <h3>Build artifacts</h3>
+        <ul>
+          <li><strong>Debug APK:</strong> <code>app/build/outputs/apk/debug/</code></li>
+          <li><strong>Release APK:</strong> <code>app/build/outputs/apk/release/</code></li>
+        </ul>
+
+        <p class="small"><strong>Note:</strong> Signing configuration is not committed yet; see <a href="#release">Release Checklist</a>.</p>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>Architecture Notes</h2>
+      <div class="card">
+        <p>
+          This repository currently contains the Gradle configuration and Android manifest for the Pathfinder Puzzle app.
+          Use the guidance below when building out the Kotlin source structure.
+        </p>
+
+        <h3>Module layout</h3>
+        <pre><code>app/
+  src/main/
+    AndroidManifest.xml</code></pre>
+
+        <p class="small">When adding source code, prefer the standard Android layout:</p>
+        <pre><code>app/
+  src/main/java/com/example/pathfinder/
+    MainActivity.kt
+    ui/
+      theme/
+      components/
+    data/
+      repositories/
+      models/
+    domain/
+      usecases/</code></pre>
+
+        <h3>Recommended layers</h3>
+        <ul>
+          <li><strong>UI layer:</strong> Compose screens, state holders, and UI-specific models.</li>
+          <li><strong>Domain layer:</strong> Puzzle rules, shuffle logic, move validation.</li>
+          <li><strong>Data layer:</strong> Persistence for best times and settings.</li>
+        </ul>
+
+        <h3>State management</h3>
+        <p>
+          When implementing gameplay, keep state in a single source of truth (e.g., a ViewModel).
+          Compose should render state without duplicating it.
+        </p>
+
+        <h3>Testing ideas</h3>
+        <ul>
+          <li>Unit test puzzle shuffling for solvability.</li>
+          <li>Unit test move validation logic.</li>
+          <li>UI test for tap-to-slide interactions and timer behavior.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="config">
+      <h2>Configuration Reference</h2>
+      <div class="card">
+        <p>This project uses standard Gradle configuration files for Android builds.</p>
+
+        <h3><code>gradle.properties</code></h3>
+        <p>Key properties are stored in <code>gradle.properties</code>:</p>
+        <ul>
+          <li><code>android_gradle_plugin_version</code>: Android Gradle plugin version.</li>
+          <li><code>kotlin_version</code>: Kotlin compiler version.</li>
+          <li><code>compose_ui_version</code>: Compose compiler extension version.</li>
+        </ul>
+        <p class="small">
+          When upgrading Compose, update the Compose BOM in <code>app/build.gradle</code> and keep this property in sync.
+        </p>
+
+        <h3><code>settings.gradle</code></h3>
+        <p>Plugin versions and repository configuration are defined in <code>settings.gradle</code>:</p>
+        <ul>
+          <li><code>pluginManagement</code> configures the Android and Kotlin plugins.</li>
+          <li><code>dependencyResolutionManagement</code> ensures dependencies resolve from Google and Maven Central.</li>
+        </ul>
+
+        <h3><code>app/build.gradle</code></h3>
+        <p>Key app settings:</p>
+        <ul>
+          <li><code>compileSdk 34</code> and <code>targetSdk 34</code>.</li>
+          <li><code>minSdk 24</code> for API compatibility.</li>
+          <li>Compose and Material 3 dependencies.</li>
+        </ul>
+
+        <h3>Tips</h3>
+        <ul>
+          <li>Keep Java and Kotlin at version 17 unless you have a specific reason to change.</li>
+          <li>Use the Gradle wrapper (<code>./gradlew</code>) for consistent builds.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="gameplay">
+      <h2>Gameplay Rules</h2>
+      <div class="card">
+        <p>
+          Pathfinder Puzzle is a sliding-tile puzzle. The goal is to restore the numbered tiles to a contiguous path pattern as quickly as possible.
+        </p>
+
+        <h3>Core rules</h3>
+        <ul>
+          <li>The board contains numbered tiles and a single empty space.</li>
+          <li>A tile can move into the empty space if it is orthogonally adjacent.</li>
+          <li>The timer starts on the first move.</li>
+          <li>The puzzle is solved when the tiles form the intended path layout.</li>
+        </ul>
+
+        <h3>Player actions</h3>
+        <ul>
+          <li>Tap a tile next to the empty space to slide it.</li>
+          <li>New game should shuffle the board into a solvable configuration.</li>
+          <li>Reset timer should restart the clock without reshuffling.</li>
+        </ul>
+
+        <h3>Scoring &amp; persistence</h3>
+        <ul>
+          <li>Track the fastest completion time on-device.</li>
+          <li>Store best times locally so they persist between sessions.</li>
+        </ul>
+
+        <h3>Extension ideas</h3>
+        <p class="small">If you want to evolve the gameplay, consider:</p>
+        <ul>
+          <li>Variable board sizes (3x3, 4x4, 5x5).</li>
+          <li>Alternate victory conditions (e.g., ordered numbers vs. path layout).</li>
+          <li>Accessibility options (high-contrast colors, larger tiles).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="release">
+      <h2>Release Checklist</h2>
+      <div class="card">
+        <p>Use this checklist when preparing a release build.</p>
+
+        <h3>Pre-flight</h3>
+        <ul>
+          <li>Update <code>versionCode</code> and <code>versionName</code> in <code>app/build.gradle</code>.</li>
+          <li>Verify <code>minSdk</code>, <code>targetSdk</code>, and <code>compileSdk</code> values.</li>
+          <li>Run unit tests and lint checks.</li>
+        </ul>
+
+        <h3>Build release APK</h3>
+        <pre><code>./gradlew assembleRelease</code></pre>
+        <p class="small">Artifacts will appear in <code>app/build/outputs/apk/release/</code>.</p>
+
+        <h3>Signing</h3>
+        <p>Release signing configuration is not yet stored in the repository. When you add it:</p>
+        <ul>
+          <li>Use a keystore stored outside the repo (or via CI secrets).</li>
+          <li>Add a <code>signingConfigs</code> block to <code>app/build.gradle</code>.</li>
+          <li>Avoid committing credentials; instead rely on Gradle properties or environment variables.</li>
+        </ul>
+
+        <h3>Post-build validation</h3>
+        <ul>
+          <li>Install the APK on a device and run a full play-through.</li>
+          <li>Verify that best-time persistence works across restarts.</li>
+          <li>Confirm any analytics or crash reporting configurations.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Troubleshooting</h2>
+      <div class="card">
+        <p>Use this section to diagnose common build and run issues.</p>
+
+        <h3>Gradle sync failures</h3>
+        <ul>
+          <li>Ensure you are using the Gradle wrapper (<code>./gradlew</code>).</li>
+          <li>Confirm network access to Google Maven and Maven Central.</li>
+          <li>Clear Gradle caches if dependency downloads are corrupted:</li>
+        </ul>
+        <pre><code>./gradlew --stop
+rm -rf ~/.gradle/caches</code></pre>
+
+        <h3>Missing Compose compiler version</h3>
+        <p>
+          The build expects a <code>compose_ui_version</code> property. If you see a
+          <code>Missing compose_ui_version</code> error, ensure <code>gradle.properties</code> contains it and that the file is not ignored.
+        </p>
+
+        <h3>Device launch issues</h3>
+        <ul>
+          <li>Ensure your emulator/device targets API 24+.</li>
+          <li>Uninstall previous debug builds if installation fails due to signature conflicts.</li>
+        </ul>
+
+        <h3>Still stuck?</h3>
+        <p class="small">Gather the following information for debugging:</p>
+        <ul>
+          <li>Android Studio version.</li>
+          <li>Full Gradle stacktrace (<code>./gradlew assembleDebug --stacktrace</code>).</li>
+          <li>Device or emulator API level.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
