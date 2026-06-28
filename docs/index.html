@@ -746,25 +746,14 @@
                 model.traverse((o) => { if (o.isMesh) explodeMeshes.push(o); });
                 explodeSpread = radius * 0.22;
 
-                // Podium under the engine (stays still while the engine rotates).
-                const podR = radius * 0.66;
-                const podH = radius * 0.5;
-                const podium = new THREE.Mesh(
-                    new THREE.CylinderGeometry(podR, podR * 1.06, podH, 64),
-                    new THREE.MeshStandardMaterial({ color: 0x16171d, metalness: 0.55, roughness: 0.45 })
-                );
-                podium.position.y = bottomY - podH / 2;
-                podium.castShadow = true;
-                podium.receiveShadow = true;
-                scene.add(podium);
-
-                // Floor to catch the spotlight pools.
+                // Floor to catch the engine's shadow + the spotlight pools.
+                const floorDrop = radius * 0.5;
                 const floor = new THREE.Mesh(
                     new THREE.CircleGeometry(radius * 7, 64),
                     new THREE.MeshStandardMaterial({ color: 0x070708, metalness: 0.1, roughness: 0.9 })
                 );
                 floor.rotation.x = -Math.PI / 2;
-                floor.position.y = bottomY - podH;
+                floor.position.y = bottomY - floorDrop;
                 floor.receiveShadow = true;
                 scene.add(floor);
 
@@ -822,8 +811,6 @@
                 const idle = reduced ? 0 : performance.now() * 0.00009;
 
                 pivot.rotation.y = -0.6 + frac * Math.PI * 2 * 0.5 + idle;
-                // Lift the engine off the podium as it opens so no part sinks into it.
-                pivot.position.y = explode * explodeSpread * 1.3;
 
                 // 1) restore rest positions, 2) let the clip animate the moving parts,
                 // 3) push every part outward for the exploded reveal.
