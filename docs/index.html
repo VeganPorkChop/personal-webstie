@@ -8,25 +8,45 @@
 
     <link rel="stylesheet" href="site-images.css">
     <style>
+        :root {
+            --accent: #ffc46b;     /* warm key light */
+            --accent-2: #ff8a5c;   /* warm rim */
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            color: white;
-            background: #0a0a0a;
-            overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #f5f3ee;
+            background: #050507;
+            overflow-x: hidden;
         }
 
-        .wheel-background {
+        /* Fixed staged-engine background (dark room + warm floor pool) */
+        #bg-canvas {
             position: fixed;
             inset: 0;
-            z-index: 0;
-            background: radial-gradient(circle at center, #1e1e1e 0%, #090909 65%, #040404 100%);
-        }
-
-        .wheel-background canvas {
             width: 100%;
             height: 100%;
+            z-index: 0;
             display: block;
+            background: radial-gradient(120% 85% at 50% 82%, #211d18 0%, #141215 34%, #09090c 68%, #050506 100%);
+        }
+
+        /* Scroll progress bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            transform-origin: left center;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            z-index: 2000;
         }
 
         .top-nav {
@@ -36,124 +56,205 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 0.95);
-            gap: 20px;
+            background-color: rgba(14, 12, 10, 0.55);
+            backdrop-filter: blur(10px);
+            gap: 16px;
             padding: 12px 0;
             z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .top-nav a {
             text-decoration: none;
-            color: #111;
-            font-size: 1rem;
+            color: #f5f3ee;
+            font-size: 0.95rem;
             font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #111;
+            border: 2px solid rgba(255, 255, 255, 0.35);
             border-radius: 999px;
             padding: 6px 18px;
             transition: all 0.3s ease;
         }
 
         .top-nav a:hover {
-            background-color: #111;
-            color: #fff;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            border-color: transparent;
+            color: #1a1206;
         }
 
-        .hero {
-            position: relative;
-            z-index: 2;
+        main { position: relative; z-index: 1; pointer-events: none; }
+        /* Let drags fall through to the 3D background for OrbitControls,
+           while keeping links (nav is outside main) clickable. */
+        main a { pointer-events: auto; }
+
+        .pane {
             min-height: 100vh;
-            padding: 120px 24px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 120px 24px 80px;
             text-align: center;
-            pointer-events: none;
         }
 
-        .hero-content {
-            max-width: 680px;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2.6rem, 8vw, 6rem);
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #ffffff, #ffe0b0 55%, #ffb877);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 60px rgba(255, 196, 130, 0.28);
+        }
+
+        .hero .tagline {
+            margin: 18px 0 0;
+            font-size: clamp(1rem, 2.4vw, 1.4rem);
+            color: #ddd6c8;
+            max-width: 640px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.85);
+        }
+
+        .scroll-cue {
+            margin-top: 56px;
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #c2b59a;
+            animation: bob 2.2s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(10px); opacity: 1; }
+        }
+
+        .glass {
+            max-width: 720px;
+            background: rgba(16, 14, 12, 0.62);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            padding: 40px 38px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        h2.section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin: 0 0 24px;
+        }
+
+        .glass p {
+            line-height: 1.7;
+            font-size: 1.05rem;
+            color: #e3ddd0;
+            margin: 0 0 14px;
+        }
+
+        .projects-wrap { width: 100%; max-width: 1100px; }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+            margin-top: 12px;
+        }
+
+        .project-card {
+            position: relative;
+            display: block;
+            text-decoration: none;
+            color: #fff;
             border-radius: 18px;
-            padding: 18px 22px;
+            overflow: hidden;
+            min-height: 220px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .project-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(8, 6, 4, 0.05) 0%, rgba(8, 6, 4, 0.85) 100%);
+            transition: background 0.35s ease;
+        }
+
+        .project-card span {
+            position: absolute;
+            left: 18px;
+            bottom: 16px;
+            right: 18px;
+            z-index: 2;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-align: left;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 26px 50px rgba(0, 0, 0, 0.55), 0 0 30px rgba(255, 180, 110, 0.28);
+        }
+
+        .project-card:hover::after {
+            background: linear-gradient(180deg, rgba(255, 150, 80, 0.18) 0%, rgba(8, 6, 4, 0.9) 100%);
+        }
+
+        .cta-btn {
+            display: inline-block;
+            margin-top: 18px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #1a1206;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            padding: 14px 32px;
+            border-radius: 999px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(255, 180, 110, 0.4);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible { opacity: 1; transform: none; }
+
+        .site-credit {
+            position: fixed;
+            left: 12px;
+            bottom: 10px;
+            z-index: 1000;
+            font-size: 0.72rem;
+            color: rgba(220, 210, 190, 0.45);
             pointer-events: auto;
         }
 
-        h1 {
-            margin: 0;
-            font-size: clamp(2rem, 4vw, 3rem);
-        }
+        .site-credit a { color: rgba(255, 206, 150, 0.7); text-decoration: none; }
+        .site-credit a:hover { text-decoration: underline; }
 
-        h2 {
-            margin: 12px 0 8px;
-            font-size: 1.2rem;
-        }
-
-        p {
-            margin: 0;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .wheel-meta {
-            margin-top: 14px;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .wheel-meta a {
-            color: #89e7ff;
-        }
-
-        .scroll-progress {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 2px;
-            z-index: 1001;
-        }
-
-        .scroll-progress-fill {
-            width: 100%;
-            height: 0%;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 2px;
-            transition: height 0.1s ease;
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .scroll-cue { animation: none; }
+            html { scroll-behavior: auto; }
         }
     </style>
 </head>
 
 <body>
-    <div class="wheel-background" aria-hidden="true">
-        <canvas id="project-wheel"></canvas>
-    </div>
-
-    <div class="scroll-progress" aria-hidden="true">
-        <div class="scroll-progress-fill"></div>
-    </div>
-    <div id="scroll-status" class="sr-only" aria-live="polite" aria-atomic="true">Viewing project 1 of 7</div>
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div class="scroll-progress" aria-hidden="true"></div>
 
     <nav class="top-nav">
         <a href="index.html">Home</a>
@@ -161,208 +262,585 @@
         <a href="contact.html">Contact</a>
     </nav>
 
-    <article class="hero">
-        <div class="hero-content">
-            <h1>Graham Gilbert-Schroeer</h1>
-            <h2>About Me</h2>
-            <p>I am a first-year Mechanical Engineering student at Northwestern University. I have been fascinated by how things work for as long as I can remember. From building small projects to solving technical problems, I am driven by curiosity and creativity, and I am always excited to turn ideas into real-world solutions through engineering.</p>
-            <p class="wheel-meta">Now featuring a wheel-of-fortune background of projects. Scroll, swipe, or use arrow keys to spin. Current project: <a id="active-project-link" href="projects/Bad Mobile Game.html">Bad Mobile Game</a></p>
-        </div>
-    </article>
+    <div class="site-credit">3D model: <a href="https://sketchfab.com/3d-models/animated-engine-v8-b0dbf778b81e4afba4edf11336e2a099" target="_blank" rel="noopener nofollow">&ldquo;Animated Engine V8&rdquo; by meeww</a></div>
+
+    <main>
+        <section class="pane hero">
+            <h1>Graham<br>Gilbert-Schroeer</h1>
+            <p class="tagline">Mechanical Engineering student at Northwestern. Scroll to crank the engine.</p>
+            <div class="scroll-cue">Scroll to explore &#8595;</div>
+        </section>
+
+        <section class="pane">
+            <div class="glass reveal">
+                <h2 class="section-title">About Me</h2>
+                <p>I am a first-year Mechanical Engineering student at Northwestern University. I have been fascinated by how things work for as long as I can remember.</p>
+                <p>From building small projects to solving technical problems, I am driven by curiosity and creativity, and I am always excited to turn ideas into real-world solutions through engineering.</p>
+            </div>
+        </section>
+
+        <section class="pane">
+            <div class="projects-wrap">
+                <h2 class="section-title reveal">Selected Projects</h2>
+                <div class="project-grid">
+                    <a class="project-card reveal" href="projects/Bad Mobile Game.html" style="background-image: var(--projectoverview-p1);"><span>Bad Mobile Game</span></a>
+                    <a class="project-card reveal" href="projects/Bartending App.html" style="background-image: var(--projectoverview-p2);"><span>Bartending App</span></a>
+                    <a class="project-card reveal" href="projects/Auto Ball Balancer.html" style="background-image: var(--projectoverview-p3);"><span>Auto Ball Balancer</span></a>
+                    <a class="project-card reveal" href="projects/Delta Arm.html" style="background-image: var(--projectoverview-p4);"><span>Delta Arm</span></a>
+                    <a class="project-card reveal" href="projects/Mishap D.html" style="background-image: var(--projectoverview-p5);"><span>Mishap D</span></a>
+                    <a class="project-card reveal" href="projects/Restaurant Scheduler.html" style="background-image: var(--projectoverview-p6);"><span>Restaurant Scheduler</span></a>
+                    <a class="project-card reveal" href="projects/Threaded Items Transfer System.html" style="background-image: var(--projectoverview-p7);"><span>Threaded Items Transfer System</span></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="pane">
+            <div class="glass reveal">
+                <h2 class="section-title">Let's build something</h2>
+                <p>Want to talk projects, internships, or engineering ideas? I'd love to hear from you.</p>
+                <a class="cta-btn" href="contact.html">Get in touch</a>
+            </div>
+        </section>
+    </main>
 
     <script>
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const TAU = Math.PI * 2;
 
-        const projects = [
-            { title: 'Bad Mobile Game', href: 'projects/Bad Mobile Game.html' },
-            { title: 'Bartending App', href: 'projects/Bartending App.html' },
-            { title: 'Auto Ball Balancer', href: 'projects/Auto Ball Balancer.html' },
-            { title: 'Delta Arm', href: 'projects/Delta Arm.html' },
-            { title: 'Mishap D', href: 'projects/Mishap D.html' },
-            { title: 'Restaurant Scheduler', href: 'projects/Restaurant Scheduler.html' },
-            { title: 'Threaded Items Transfer System', href: 'projects/Threaded Items Transfer System.html' }
-        ];
-
-        const totalSections = projects.length;
-        const canvas = document.getElementById('project-wheel');
+        const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        const statusElement = document.getElementById('scroll-status');
-        const activeProjectLink = document.getElementById('active-project-link');
-        const progressFill = document.querySelector('.scroll-progress-fill');
+        let w = 0, h = 0, dpr = 1, unit = 80;
 
-        let width = 0;
-        let height = 0;
-        let centerX = 0;
-        let centerY = 0;
-        let radius = 0;
+        // The 3D model loader (below) calls this to take over the background.
+        let wireframeActive = true;
+        window.__stopWireframe = () => { wireframeActive = false; };
 
-        let scrollTarget = 0;
-        let scrollCurrent = 0;
-        let lastAnnouncedSection = 0;
-
-        const maxScroll = totalSections;
-        const baseDamping = 0.08;
-
-        function resizeCanvas() {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = Math.floor(width * dpr);
-            canvas.height = Math.floor(height * dpr);
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            centerX = width / 2;
-            centerY = height / 2;
-            radius = Math.min(width, height) * 0.34;
+            unit = Math.min(w, h) * 0.092;
         }
 
-        function normalizeScroll(value) {
-            if (value < 0) {
-                return value + maxScroll * Math.ceil(Math.abs(value) / maxScroll);
+        /* ---------- lighting (stage spotlights) ---------- */
+        function norm(x, y, z) { const l = Math.hypot(x, y, z) || 1; return { x: x / l, y: y / l, z: z / l }; }
+        const KEY_DIR = norm(-0.5, 0.72, 0.55);   // warm key, upper-left-front
+        const FILL_DIR = norm(0.65, 0.4, 0.5);    // cool fill, right-front
+        const KEY_COL = [255, 236, 205];
+        const FILL_COL = [150, 180, 255];
+
+        function shade(dir, base, amb, keyW, fillW) {
+            const kd = Math.max(0, dir.x * KEY_DIR.x + dir.y * KEY_DIR.y + dir.z * KEY_DIR.z) * keyW;
+            const fd = Math.max(0, dir.x * FILL_DIR.x + dir.y * FILL_DIR.y + dir.z * FILL_DIR.z) * fillW;
+            const r = Math.min(255, base[0] * (amb + kd * KEY_COL[0] / 255 + fd * FILL_COL[0] / 255));
+            const g = Math.min(255, base[1] * (amb + kd * KEY_COL[1] / 255 + fd * FILL_COL[1] / 255));
+            const b = Math.min(255, base[2] * (amb + kd * KEY_COL[2] / 255 + fd * FILL_COL[2] / 255));
+            return (r | 0) + ',' + (g | 0) + ',' + (b | 0);
+        }
+
+        /* ---------- engine geometry (rebuilt each frame for moving parts) ---------- */
+        const CYL = [-1.5, -0.5, 0.5, 1.5];
+        const PHASE = [0, Math.PI, Math.PI, 0];
+        const CRANK_Y = -0.55;
+        const AMP = 0.34;
+        const M_STRUCT = { base: [120, 128, 142], amb: 0.30, w: 1.5 };
+        const M_MOVE = { base: [188, 192, 205], amb: 0.34, w: 1.9 };
+
+        function pt(x, y, z) { return { x, y, z }; }
+
+        function ring(out, cx, cy, cz, r, plane, mat, n) {
+            n = n || 22;
+            let prev = null;
+            for (let k = 0; k <= n; k++) {
+                const t = (k / n) * TAU;
+                let p;
+                if (plane === 'xz') p = pt(cx + r * Math.cos(t), cy, cz + r * Math.sin(t));
+                else if (plane === 'yz') p = pt(cx, cy + r * Math.cos(t), cz + r * Math.sin(t));
+                else p = pt(cx + r * Math.cos(t), cy + r * Math.sin(t), cz);
+                if (prev) out.push([prev, p, mat]);
+                prev = p;
             }
-            return value % maxScroll;
         }
 
-        function updateStatusFromScroll() {
-            const normalized = normalizeScroll(scrollCurrent);
-            const activeIndex = Math.round(normalized) % totalSections;
+        function boxEdges(out, x0, x1, y0, y1, z0, z1, mat) {
+            const c = [
+                pt(x0, y0, z0), pt(x1, y0, z0), pt(x1, y1, z0), pt(x0, y1, z0),
+                pt(x0, y0, z1), pt(x1, y0, z1), pt(x1, y1, z1), pt(x0, y1, z1)
+            ];
+            const e = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            for (const [a, b] of e) out.push([c[a], c[b], mat]);
+        }
 
-            if (activeIndex !== lastAnnouncedSection) {
-                statusElement.textContent = `Viewing project ${activeIndex + 1} of ${totalSections}: ${projects[activeIndex].title}`;
-                activeProjectLink.textContent = projects[activeIndex].title;
-                activeProjectLink.href = projects[activeIndex].href;
-                lastAnnouncedSection = activeIndex;
+        function buildEngine(theta) {
+            const segs = [];
+            boxEdges(segs, -2, 2, -0.15, 0.5, -0.55, 0.55, M_STRUCT);
+            segs.push([pt(-2.1, CRANK_Y, 0), pt(2.4, CRANK_Y, 0), M_MOVE]);
+
+            for (let i = 0; i < CYL.length; i++) {
+                const cx = CYL[i];
+                const ph = PHASE[i];
+                ring(segs, cx, 0.55, 0, 0.34, 'xz', M_STRUCT, 18);
+                ring(segs, cx, 1.95, 0, 0.34, 'xz', M_STRUCT, 18);
+                for (let s = 0; s < 6; s++) {
+                    const a = (s / 6) * TAU;
+                    const px = cx + 0.34 * Math.cos(a), pz = 0.34 * Math.sin(a);
+                    segs.push([pt(px, 0.55, pz), pt(px, 1.95, pz), M_STRUCT]);
+                }
+                const pistonY = 1.15 + AMP * Math.cos(theta + ph);
+                ring(segs, cx, pistonY, 0, 0.3, 'xz', M_MOVE, 14);
+                ring(segs, cx, pistonY + 0.16, 0, 0.3, 'xz', M_MOVE, 14);
+                const pinY = CRANK_Y + AMP * Math.cos(theta + ph);
+                const pinZ = AMP * Math.sin(theta + ph);
+                segs.push([pt(cx, pistonY - 0.05, 0), pt(cx, pinY, pinZ), M_MOVE]);
+                ring(segs, cx, pinY, pinZ, 0.08, 'xz', M_MOVE, 8);
             }
 
-            const progress = (normalized / (totalSections - 1 || 1)) * 100;
-            progressFill.style.height = `${Math.max(0, Math.min(100, progress))}%`;
+            const fwx = 2.3;
+            ring(segs, fwx, CRANK_Y, 0, 0.9, 'yz', M_MOVE, 30);
+            ring(segs, fwx, CRANK_Y, 0, 0.78, 'yz', M_MOVE, 30);
+            for (let s = 0; s < 6; s++) {
+                const a = theta + (s / 6) * TAU;
+                segs.push([
+                    pt(fwx, CRANK_Y, 0),
+                    pt(fwx, CRANK_Y + 0.9 * Math.cos(a), 0.9 * Math.sin(a)),
+                    M_MOVE
+                ]);
+            }
+            return segs;
         }
 
-        function drawWheel(rotationProgress) {
-            ctx.clearRect(0, 0, width, height);
+        /* ---------- camera ---------- */
+        function rotY(p, a) {
+            const c = Math.cos(a), s = Math.sin(a);
+            return pt(p.x * c + p.z * s, p.y, -p.x * s + p.z * c);
+        }
+        function rotX(p, a) {
+            const c = Math.cos(a), s = Math.sin(a);
+            return pt(p.x, p.y * c - p.z * s, p.y * s + p.z * c);
+        }
 
-            const glowGradient = ctx.createRadialGradient(centerX, centerY, radius * 0.15, centerX, centerY, radius * 1.25);
-            glowGradient.addColorStop(0, 'rgba(0, 212, 255, 0.16)');
-            glowGradient.addColorStop(0.6, 'rgba(123, 47, 247, 0.12)');
-            glowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = glowGradient;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius * 1.3, 0, Math.PI * 2);
-            ctx.fill();
+        const PITCH = 0.5;
+        const DIST = 7;
 
-            const sectionAngle = (Math.PI * 2) / totalSections;
-            const baseRotation = rotationProgress * sectionAngle;
+        function project(p, yaw, cx, cy) {
+            let q = rotY(p, yaw);
+            q = rotX(q, PITCH);
+            const scale = (DIST * unit) / (DIST - q.z);
+            return { x: cx + q.x * scale, y: cy - q.y * scale, z: q.z };
+        }
 
-            for (let i = 0; i < totalSections; i++) {
-                const startAngle = baseRotation + i * sectionAngle - Math.PI / 2;
-                const endAngle = startAngle + sectionAngle;
-                const hue = Math.round((i / totalSections) * 320);
+        /* ---------- podium (solid, lit by the same stage lights) ---------- */
+        const POD_TOP = -1.65, POD_BOT = -4.2, POD_R = 2.75;
 
+        function drawPodium(yaw, cx, cy) {
+            const n = 56;
+            const tp = [], bp = [];
+            for (let i = 0; i <= n; i++) {
+                const a = (i / n) * TAU;
+                const ox = Math.cos(a), oz = Math.sin(a);
+                tp.push(project(pt(POD_R * ox, POD_TOP, POD_R * oz), yaw, cx, cy));
+                bp.push(project(pt(POD_R * ox, POD_BOT, POD_R * oz), yaw, cx, cy));
+            }
+            // side panels with backface culling + per-panel stage shading
+            for (let i = 0; i < n; i++) {
+                const a = ((i + 0.5) / n) * TAU;
+                let nrm = rotY(pt(Math.cos(a), 0, Math.sin(a)), yaw);
+                const wd = { x: nrm.x, y: nrm.y, z: nrm.z };
+                nrm = rotX(nrm, PITCH);
+                if (nrm.z <= 0) continue; // facing away from camera
+                ctx.fillStyle = 'rgb(' + shade(wd, [62, 64, 74], 0.22, 1.0, 0.5) + ')';
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.moveTo(tp[i].x, tp[i].y);
+                ctx.lineTo(tp[i + 1].x, tp[i + 1].y);
+                ctx.lineTo(bp[i + 1].x, bp[i + 1].y);
+                ctx.lineTo(bp[i].x, bp[i].y);
                 ctx.closePath();
-
-                ctx.fillStyle = `hsla(${hue}, 90%, 55%, 0.78)`;
                 ctx.fill();
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-                ctx.stroke();
-
-                const labelAngle = startAngle + sectionAngle / 2;
-                const textRadius = radius * 0.62;
-                const textX = centerX + Math.cos(labelAngle) * textRadius;
-                const textY = centerY + Math.sin(labelAngle) * textRadius;
-
-                ctx.save();
-                ctx.translate(textX, textY);
-                ctx.rotate(labelAngle + Math.PI / 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                ctx.font = '600 14px Arial, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(projects[i].title, 0, 0, radius * 0.75);
-                ctx.restore();
             }
-
+            // top face (faces up -> caught by key light)
+            ctx.fillStyle = 'rgb(' + shade(pt(0, 1, 0), [92, 94, 104], 0.42, 1.0, 0.5) + ')';
             ctx.beginPath();
-            ctx.arc(centerX, centerY, radius * 0.18, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(8, 8, 8, 0.92)';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY - radius - 18);
-            ctx.lineTo(centerX - 16, centerY - radius + 12);
-            ctx.lineTo(centerX + 16, centerY - radius + 12);
+            ctx.moveTo(tp[0].x, tp[0].y);
+            for (let i = 1; i <= n; i++) ctx.lineTo(tp[i].x, tp[i].y);
             ctx.closePath();
-            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            // warm rim highlight on the top edge
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(255, 224, 180, 0.3)';
+            ctx.stroke();
+        }
+
+        /* ---------- stage dressing ---------- */
+        function drawBeam(srcX, srcY, tgtX, tgtY, spread, color) {
+            const g = ctx.createLinearGradient(srcX, srcY, tgtX, tgtY);
+            g.addColorStop(0, color);
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.moveTo(srcX - 10, srcY);
+            ctx.lineTo(srcX + 10, srcY);
+            ctx.lineTo(tgtX + spread, tgtY + spread * 0.25);
+            ctx.lineTo(tgtX - spread, tgtY + spread * 0.25);
+            ctx.closePath();
             ctx.fill();
         }
 
-        window.addEventListener('wheel', (event) => {
-            event.preventDefault();
-            scrollTarget += event.deltaY * 0.0025;
-        }, { passive: false });
+        function drawStage(cx, cy) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            // crossed spotlight beams
+            drawBeam(cx - unit * 2.6, -40, cx, cy, unit * 2.6, 'rgba(255, 234, 200, 0.10)');
+            drawBeam(cx + unit * 2.6, -40, cx, cy, unit * 2.4, 'rgba(165, 195, 255, 0.07)');
+            // warm floor pool under the podium
+            const poolY = cy + unit * 2.6;
+            ctx.save();
+            ctx.translate(cx, poolY); ctx.scale(1, 0.4); ctx.translate(-cx, -poolY);
+            const pool = ctx.createRadialGradient(cx, poolY, unit * 0.2, cx, poolY, unit * 4.4);
+            pool.addColorStop(0, 'rgba(255, 222, 178, 0.18)');
+            pool.addColorStop(0.5, 'rgba(255, 205, 160, 0.06)');
+            pool.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = pool;
+            ctx.beginPath(); ctx.arc(cx, poolY, unit * 4.4, 0, TAU); ctx.fill();
+            ctx.restore();
+            ctx.restore();
+        }
 
-        let lastTouchY = 0;
-        window.addEventListener('touchstart', (event) => {
-            lastTouchY = event.touches[0].clientY;
-        }, { passive: true });
+        function drawContactShadow(yaw, cx, cy) {
+            const base = project(pt(0, POD_BOT, 0), yaw, cx, cy);
+            ctx.save();
+            ctx.translate(base.x, base.y); ctx.scale(1, 0.3); ctx.translate(-base.x, -base.y);
+            const sg = ctx.createRadialGradient(base.x, base.y, 2, base.x, base.y, unit * 3.2);
+            sg.addColorStop(0, 'rgba(0,0,0,0.55)');
+            sg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = sg;
+            ctx.beginPath(); ctx.arc(base.x, base.y, unit * 3.2, 0, TAU); ctx.fill();
+            ctx.restore();
+        }
 
-        window.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-            const touchY = event.touches[0].clientY;
-            const deltaY = lastTouchY - touchY;
-            scrollTarget += deltaY * 0.012;
-            lastTouchY = touchY;
-        }, { passive: false });
+        /* ---------- scroll-driven animation ---------- */
+        let yawTarget = 0, yawCurrent = 0;
+        let crankTarget = 0, crankCurrent = 0;
 
-        window.addEventListener('keydown', (event) => {
-            const spinStep = 1;
-            const fastSpinStep = 3;
-            switch (event.key) {
-                case 'ArrowDown':
-                case 'ArrowRight':
-                    event.preventDefault();
-                    scrollTarget += spinStep;
-                    break;
-                case 'ArrowUp':
-                case 'ArrowLeft':
-                    event.preventDefault();
-                    scrollTarget -= spinStep;
-                    break;
-                case 'PageDown':
-                    event.preventDefault();
-                    scrollTarget += fastSpinStep;
-                    break;
-                case 'PageUp':
-                    event.preventDefault();
-                    scrollTarget -= fastSpinStep;
-                    break;
-                case 'Home':
-                    event.preventDefault();
-                    scrollTarget = 0;
-                    break;
+        function onScroll() {
+            const frac = window.scrollY / Math.max(1, window.innerHeight);
+            yawTarget = -0.6 + frac * TAU * 0.6;
+            crankTarget = frac * TAU * 2.6;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = max > 0 ? window.scrollY / max : 0;
+            document.querySelector('.scroll-progress').style.transform = `scaleX(${pct})`;
+        }
+
+        function draw(time) {
+            if (!wireframeActive) { return; }
+            const t = time * 0.001;
+            ctx.clearRect(0, 0, w, h);
+
+            const damp = prefersReducedMotion ? 1 : 0.09;
+            yawCurrent += (yawTarget - yawCurrent) * damp;
+            crankCurrent += (crankTarget - crankCurrent) * damp;
+            const idle = prefersReducedMotion ? 0 : t * 0.9;
+
+            const cx = w / 2, cy = h * 0.48;
+
+            drawStage(cx, cy);
+            drawContactShadow(yawCurrent, cx, cy);
+            drawPodium(yawCurrent, cx, cy);
+
+            const segs = buildEngine(crankCurrent + idle);
+            ctx.lineCap = 'round';
+            for (const [a, b, mat] of segs) {
+                const pa = project(a, yawCurrent, cx, cy);
+                const pb = project(b, yawCurrent, cx, cy);
+                const mid = rotY(pt((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2), yawCurrent);
+                const dir = norm(mid.x, mid.y, mid.z);
+                const depth = (pa.z + pb.z) / 2;
+                const fog = Math.max(0.28, Math.min(1, (depth + 2.4) / 4));
+                ctx.strokeStyle = `rgba(${shade(dir, mat.base, mat.amb, 1.0, 0.5)}, ${fog.toFixed(3)})`;
+                ctx.lineWidth = mat.w;
+                ctx.beginPath();
+                ctx.moveTo(pa.x, pa.y);
+                ctx.lineTo(pb.x, pb.y);
+                ctx.stroke();
             }
+
+            requestAnimationFrame(draw);
+        }
+
+        /* ---------- reveal on scroll ---------- */
+        const observer = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            }
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transitionDelay = (i % 4) * 0.08 + 's';
+            observer.observe(el);
         });
 
-        function animate() {
-            requestAnimationFrame(animate);
+        resize();
+        onScroll();
+        window.addEventListener('resize', resize);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        requestAnimationFrame(draw);
+    </script>
 
-            const damping = prefersReducedMotion ? 1 : baseDamping;
-            scrollCurrent += (scrollTarget - scrollCurrent) * damping;
-
-            drawWheel(scrollCurrent);
-            updateStatusFromScroll();
+    <!-- ==========================================================
+         Realistic V8 upgrade.
+         Drop a rigged/animated engine model at  models/v8-engine.glb
+         and this replaces the wireframe with the real thing on a
+         spotlit podium:
+           - pistons crank continuously (own clock, independent of scroll)
+           - scrolling EXPLODES the engine open (full by ~65% of the page)
+           - scroll also gently orbits the engine; drag to orbit
+           - HDRI lighting + bloom/SSAO post for a studio look
+         If the file is missing, the staged wireframe above stays.
+         3D model: "Animated Engine V8" by meeww (Sketchfab).
+         ========================================================== -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
         }
+    }
+    </script>
+    <script type="module">
+        const MODEL_URL = 'models/v8-engine.glb';
 
-        resizeCanvas();
-        animate();
-        window.addEventListener('resize', resizeCanvas);
+        (async () => {
+            try {
+                const head = await fetch(MODEL_URL, { method: 'HEAD' });
+                if (!head.ok) return;
+            } catch (e) {
+                return;
+            }
+
+            const THREE = await import('three');
+            const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+            const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+            const { RGBELoader } = await import('three/addons/loaders/RGBELoader.js');
+            const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+            const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+            const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+            const { OutputPass } = await import('three/addons/postprocessing/OutputPass.js');
+
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.3;
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            const oldCanvas = document.getElementById('bg-canvas');
+            const bgStyle = getComputedStyle(oldCanvas).background;
+            const el = renderer.domElement;
+            el.id = 'bg-canvas';
+            el.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;';
+            el.style.background = bgStyle;
+            window.__stopWireframe();
+            oldCanvas.replaceWith(el);
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x070709);   // dark studio so bloom/SSAO composite cleanly
+            const pmrem = new THREE.PMREMGenerator(renderer);
+            scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;   // fallback IBL
+
+            // Upgrade to a real studio HDRI for believable reflections (falls back silently).
+            new RGBELoader()
+                .load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr',
+                    (hdr) => {
+                        hdr.mapping = THREE.EquirectangularReflectionMapping;
+                        scene.environment = pmrem.fromEquirectangular(hdr).texture;
+                        hdr.dispose();
+                    },
+                    undefined,
+                    () => { /* keep RoomEnvironment fallback */ });
+
+            // Stage lighting: low ambient + warm key + cool fill + back rim spotlights.
+            scene.add(new THREE.AmbientLight(0x3a3630, 0.5));
+
+            const key = new THREE.SpotLight(0xffe6c0, 7, 0, Math.PI / 6, 0.45, 0);
+            key.position.set(-6, 10, 7);
+            key.castShadow = true;
+            key.shadow.mapSize.set(2048, 2048);
+            key.shadow.bias = -0.0005;
+            scene.add(key); scene.add(key.target);
+
+            const fill = new THREE.SpotLight(0xaaccff, 3.5, 0, Math.PI / 5, 0.55, 0);
+            fill.position.set(8, 6, -2);
+            scene.add(fill); scene.add(fill.target);
+
+            const rim = new THREE.SpotLight(0xffffff, 3, 0, Math.PI / 6, 0.6, 0);
+            rim.position.set(0, 8, -9);
+            scene.add(rim); scene.add(rim.target);
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.08;
+            controls.enablePan = false;
+            controls.enableZoom = false;
+            controls.minPolarAngle = 0.15;
+            controls.maxPolarAngle = Math.PI * 0.52;   // don't drop below the stage floor
+            controls.target.set(0, 0, 0);
+
+            const pivot = new THREE.Group();   // the engine spins; the podium stays put
+            scene.add(pivot);
+
+            let mixer = null;
+            let composer = null;
+            let explodeMeshes = [];
+            let explodeSpread = 0;
+            let explode = 0, explodeTarget = 0;
+            const EXPLODE_AT = 0.65;           // engine fully open by 65% of the page scroll
+            const clock = new THREE.Clock();
+            const _off = new THREE.Vector3();
+
+            new GLTFLoader().load(MODEL_URL, (gltf) => {
+                const model = gltf.scene;
+                model.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.sub(center);
+                pivot.add(model);
+
+                const radius = Math.max(size.x, size.y, size.z) || 1;
+                const bottomY = -size.y / 2;
+
+                // Record each mesh's rest position + outward direction for the exploded reveal.
+                model.updateWorldMatrix(true, true);
+                const modelCenterW = box.getCenter(new THREE.Vector3());
+                model.traverse((o) => {
+                    if (!o.isMesh) return;
+                    const b = new THREE.Box3().setFromObject(o);
+                    const cw = b.getCenter(new THREE.Vector3());
+                    const dirW = cw.sub(modelCenterW);
+                    if (dirW.lengthSq() < 1e-6) dirW.set(0, 1, 0);
+                    dirW.normalize();
+                    // convert world direction into the mesh parent's local space
+                    const dirLocal = dirW.clone();
+                    if (o.parent) {
+                        const nm = new THREE.Matrix3().getNormalMatrix(o.parent.matrixWorld).invert();
+                        dirLocal.applyMatrix3(nm).normalize();
+                    }
+                    o.userData.restPos = o.position.clone();
+                    o.userData.explodeDir = dirLocal;
+                });
+                explodeMeshes = [];
+                model.traverse((o) => { if (o.isMesh) explodeMeshes.push(o); });
+                explodeSpread = radius * 0.22;
+
+                // Podium under the engine (stays still while the engine rotates).
+                const podR = radius * 0.66;
+                const podH = radius * 0.5;
+                const podium = new THREE.Mesh(
+                    new THREE.CylinderGeometry(podR, podR * 1.06, podH, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x16171d, metalness: 0.55, roughness: 0.45 })
+                );
+                podium.position.y = bottomY - podH / 2;
+                podium.castShadow = true;
+                podium.receiveShadow = true;
+                scene.add(podium);
+
+                // Floor to catch the spotlight pools.
+                const floor = new THREE.Mesh(
+                    new THREE.CircleGeometry(radius * 7, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x070708, metalness: 0.1, roughness: 0.9 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = bottomY - podH;
+                floor.receiveShadow = true;
+                scene.add(floor);
+
+                // Aim all the lights at the engine.
+                for (const l of [key, fill, rim]) l.target.position.set(0, 0, 0);
+
+                camera.position.set(0, radius * 0.5, radius * 2.7);
+                camera.lookAt(0, 0, 0);
+                controls.minDistance = radius * 1.2;
+                controls.maxDistance = radius * 5;
+                controls.update();
+
+                // Pistons crank continuously on their own clock (driven by mixer.update in the loop).
+                console.info('engine animations:', gltf.animations.length);
+                if (gltf.animations && gltf.animations.length) {
+                    mixer = new THREE.AnimationMixer(model);
+                    const action = mixer.clipAction(gltf.animations[0]);
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                    action.play();
+                    mixer.timeScale = 0.5;   // calmer idle (≈ half speed)
+                }
+
+                // Post-processing composer (built now that we know the model scale).
+                composer = new EffectComposer(renderer);
+                composer.addPass(new RenderPass(scene, camera));
+                const bloom = new UnrealBloomPass(
+                    new THREE.Vector2(window.innerWidth, window.innerHeight), 0.25, 0.4, 0.85);
+                composer.addPass(bloom);
+                composer.addPass(new OutputPass());
+            });
+
+            let frac = 0, fracTarget = 0;
+            function onScroll() {
+                fracTarget = window.scrollY / Math.max(1, window.innerHeight);   // orbit (per viewport)
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = maxScroll > 0 ? window.scrollY / maxScroll : 0;       // explode (per page)
+                explodeTarget = Math.max(0, Math.min(1, pct / EXPLODE_AT));
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                if (composer) composer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            function loop() {
+                requestAnimationFrame(loop);
+                const dt = clock.getDelta();
+
+                frac += (fracTarget - frac) * (reduced ? 1 : 0.1);
+                explode += (explodeTarget - explode) * (reduced ? 1 : 0.12);
+                const idle = reduced ? 0 : performance.now() * 0.00009;
+
+                pivot.rotation.y = -0.6 + frac * Math.PI * 2 * 0.5 + idle;
+
+                // 1) restore rest positions, 2) let the clip animate the moving parts,
+                // 3) push every part outward for the exploded reveal.
+                for (const m of explodeMeshes) m.position.copy(m.userData.restPos);
+                if (mixer) mixer.update(reduced ? 0 : dt);
+                if (explode > 0.0005) {
+                    const amt = explode * explodeSpread;
+                    for (const m of explodeMeshes) {
+                        _off.copy(m.userData.explodeDir).multiplyScalar(amt);
+                        m.position.add(_off);
+                    }
+                }
+
+                controls.update();
+                if (composer) composer.render();
+                else renderer.render(scene, camera);
+            }
+            loop();
+        })();
     </script>
 </body>
 
