@@ -822,6 +822,8 @@
                 const idle = reduced ? 0 : performance.now() * 0.00009;
 
                 pivot.rotation.y = -0.6 + frac * Math.PI * 2 * 0.5 + idle;
+                // Lift the engine off the podium as it opens so no part sinks into it.
+                pivot.position.y = explode * explodeSpread * 1.3;
 
                 // 1) restore rest positions, 2) let the clip animate the moving parts,
                 // 3) push every part outward for the exploded reveal.
