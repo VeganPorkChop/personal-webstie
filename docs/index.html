@@ -290,12 +290,30 @@
             opacity: 0;
             transition: opacity .4s ease, transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
-        .drop-zone.show { opacity: 1; }
+        .drop-zone.show { opacity: 1; animation: portalPulse 2.2s ease-in-out infinite; }
         .drop-zone.hot {
-            box-shadow: 0 0 55px rgba(255,205,150,.65);
-            transform: translateY(-50%) scale(1.04);
+            box-shadow: 0 0 60px rgba(255,205,150,.75);
+            transform: translateY(-50%) scale(1.08);
             border-color: rgba(255,228,185,1);
+            animation: none;
         }
+        @keyframes portalPulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(255,200,140,0); }
+            50% { box-shadow: 0 0 42px rgba(255,200,140,.4); }
+        }
+
+        /* outlined ghost that follows the cursor during the drag */
+        .drag-ghost {
+            position: fixed; z-index: 1550; pointer-events: none;
+            transform: translate(-50%, -50%);
+            padding: 16px 26px; border-radius: 999px;
+            border: 2px dashed rgba(255,206,150,.95);
+            color: rgba(255,226,192,.95); font-weight: 800; font-size: 1.02rem;
+            background: rgba(20,14,10,.22); backdrop-filter: blur(2px);
+            white-space: nowrap; box-shadow: 0 8px 30px rgba(0,0,0,.4);
+        }
+        .drag-ghost.over { border-color: #ffe4b9; color: #fff; border-style: solid; }
+        .enter-btn.grabbing { opacity: .4; cursor: grabbing; }
 
         /* portal transition veil */
         #portal-veil {
@@ -383,10 +401,10 @@
         <section class="pane" id="work">
             <div class="enter-wrap">
                 <h2 class="section-title reveal">Enter the Gallery</h2>
-                <p class="enter-sub reveal">Step into a Louvre-style hall and walk among my projects.</p>
+                <p class="enter-sub reveal">Grab the orb and drag it into the portal to step inside a Louvre-style hall.</p>
                 <div class="enter-stage">
-                    <div class="drop-zone" id="drop-zone" aria-hidden="true"><span>Drop here<br>to enter</span></div>
-                    <button class="enter-btn" id="enter-btn" type="button">Click me</button>
+                    <div class="drop-zone" id="drop-zone" aria-hidden="true"><span>Drag<br>into here</span></div>
+                    <button class="enter-btn" id="enter-btn" type="button">Click &amp; drag me</button>
                 </div>
             </div>
         </section>
@@ -706,21 +724,15 @@
         window.addEventListener('scroll', onScroll, { passive: true });
         requestAnimationFrame(draw);
 
-        /* ---------- Click -> Drag -> Drop portal into the gallery ---------- */
+        /* ---------- Click-and-drag portal into the gallery (single gesture) ---------- */
         (function () {
             const btn = document.getElementById('enter-btn');
             const zone = document.getElementById('drop-zone');
             const veil = document.getElementById('portal-veil');
             if (!btn || !zone || !veil) return;
 
-            let armed = false, dragging = false, committed = false;
-
-            btn.addEventListener('click', () => {
-                if (armed || dragging) return;        // first click just arms the drag
-                armed = true;
-                btn.textContent = 'Drag me';
-                zone.classList.add('show');
-            });
+            zone.classList.add('show');            // the portal is visible from the start
+            let dragging = false, committed = false, ghost = null;
 
             function zoneCenter() {
                 const r = zone.getBoundingClientRect();
@@ -736,13 +748,18 @@
                 const c = zoneCenter();
                 return Math.hypot(x - c.x, y - c.y) < c.rad;
             }
+            function moveGhost(x, y) { if (ghost) { ghost.style.left = x + 'px'; ghost.style.top = y + 'px'; } }
 
+            // Press and drag in one motion — an outlined ghost follows the cursor.
             btn.addEventListener('pointerdown', (e) => {
-                if (!armed || committed) return;
+                if (committed) return;
                 dragging = true;
-                btn.classList.add('dragging');
-                btn.style.position = 'fixed';
-                btn.style.margin = '0';
+                btn.classList.add('grabbing');
+                ghost = document.createElement('div');
+                ghost.className = 'drag-ghost';
+                ghost.textContent = 'Drag to the portal';
+                document.body.appendChild(ghost);
+                moveGhost(e.clientX, e.clientY);
                 try { btn.setPointerCapture(e.pointerId); } catch (_) {}
                 e.preventDefault();
             });
@@ -750,41 +767,40 @@
             window.addEventListener('pointermove', (e) => {
                 if (!dragging) return;
                 const x = e.clientX, y = e.clientY;
-                btn.style.left = (x - btn.offsetWidth / 2) + 'px';
-                btn.style.top = (y - btn.offsetHeight / 2) + 'px';
+                moveGhost(x, y);
                 const p = progress(x, y);
                 window.__engineCtl.pan = p;
                 veil.style.opacity = (p * 0.85).toFixed(3);
                 veil.style.setProperty('--px', (x / window.innerWidth * 100) + '%');
-                zone.classList.toggle('hot', overZone(x, y));
+                const hot = overZone(x, y);
+                zone.classList.toggle('hot', hot);
+                if (ghost) ghost.classList.toggle('over', hot);
             });
+
+            function endDrag() {
+                dragging = false;
+                btn.classList.remove('grabbing');
+                if (ghost) { ghost.remove(); ghost = null; }
+            }
 
             window.addEventListener('pointerup', (e) => {
                 if (!dragging) return;
-                dragging = false;
-                btn.classList.remove('dragging');
-                if (overZone(e.clientX, e.clientY)) {
+                const dropped = overZone(e.clientX, e.clientY);
+                endDrag();
+                if (dropped) {
                     committed = true;
                     veil.style.transition = 'opacity .5s ease';
                     veil.style.opacity = '1';
                     setTimeout(() => {
                         if (window.__enterGallery) window.__enterGallery();
-                        setTimeout(() => { veil.style.opacity = '0'; window.__engineCtl.pan = 0; }, 450);
-                        // reset the portal UI so returning from the gallery is tidy
-                        armed = false; committed = false;
-                        btn.textContent = 'Click me';
-                        btn.style.position = ''; btn.style.left = ''; btn.style.top = ''; btn.style.margin = '';
-                        zone.classList.remove('show', 'hot');
+                        setTimeout(() => { veil.style.opacity = '0'; window.__engineCtl.pan = 0; }, 600);
+                        committed = false;          // ready to re-enter after leaving
+                        zone.classList.remove('hot');
                     }, 520);
                 } else {
-                    // snap back to the right-anchored resting spot
                     window.__engineCtl.pan = 0;
                     veil.style.opacity = '0';
                     zone.classList.remove('hot');
-                    btn.style.position = '';
-                    btn.style.left = '';
-                    btn.style.top = '';
-                    btn.style.margin = '';
                 }
             });
         })();
@@ -1072,6 +1088,8 @@
 
             let renderer, scene, camera, controls, raycaster, loader;
             let built = false, active = false, rafId = 0;
+            let intro = false, introT = 0;          // "turn around into the room" entry
+            const INTRO_DUR = 1.8;
             const clock = new THREE.Clock();
             const keys = {};
             const velocity = new THREE.Vector3();
@@ -1251,6 +1269,17 @@
                 rafId = requestAnimationFrame(animate);
                 const dt = Math.min(clock.getDelta(), 0.05);
 
+                if (intro) {
+                    // Sweep the view 180° — you "turn around" to face the gallery.
+                    introT += dt;
+                    const tt = Math.min(1, introT / INTRO_DUR);
+                    const e = 1 - Math.pow(1 - tt, 3);            // easeOutCubic
+                    camera.rotation.y = Math.PI * (1 - e);        // PI (facing the door) -> 0 (facing the hall)
+                    if (tt >= 1) { intro = false; promptEl.classList.remove('hide'); }
+                    renderer.render(scene, camera);
+                    return;                                        // no walking while turning
+                }
+
                 velocity.x -= velocity.x * 9 * dt;
                 velocity.z -= velocity.z * 9 * dt;
                 direction.z = (keys.w ? 1 : 0) - (keys.s ? 1 : 0);
@@ -1303,11 +1332,24 @@
                 if (!built) build();
                 galleryEl.classList.add('active');
                 hud.style.display = 'block';
-                promptEl.classList.remove('hide');
                 titleEl.classList.remove('show');
                 active = true;
                 if (window.__engineCtl) window.__engineCtl.paused = true;
                 document.body.style.overflow = 'hidden';
+
+                // Spawn near the entrance facing the door, then turn around into the hall.
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                controls.getObject().position.set(0, EYE, HALFL - 3);
+                camera.rotation.order = 'YXZ';
+                camera.rotation.set(0, Math.PI, 0);     // looking back at the entrance
+                if (reduced) {
+                    camera.rotation.y = 0; intro = false;
+                    promptEl.classList.remove('hide');
+                } else {
+                    intro = true; introT = 0;
+                    promptEl.classList.add('hide');     // reveal the prompt after the turn
+                }
+
                 onResize();
                 window.addEventListener('keydown', kd);
                 window.addEventListener('keyup', ku);
