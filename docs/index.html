@@ -1125,14 +1125,14 @@
                 const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
             }
 
-            function addPainting(img, title, href, x, y, z, ry, w, h) {
+            function addPainting(img, title, href, x, y, z, ry, w, h, emi) {
                 const group = new THREE.Group();
                 const tex = loader.load(img); tex.colorSpace = THREE.SRGBColorSpace;
                 const art = new THREE.Mesh(
                     new THREE.PlaneGeometry(w, h),
                     new THREE.MeshStandardMaterial({
                         map: tex, roughness: 0.6,
-                        emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.6   // keep art readable in the dim hall
+                        emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: emi == null ? 0.6 : emi   // keep art readable in the dim hall
                     }));
                 art.position.z = 0.07;
                 const frame = new THREE.Mesh(
@@ -1209,13 +1209,9 @@
                     new THREE.MeshStandardMaterial({ color: 0x6f3a33, roughness: 0.85 }));
                 part.position.set(0, PART.h / 2, 0); scene.add(part);
 
-                // Mona Lisa on the entrance-facing side, behind a subtle glass plane
-                addPainting('images/gallery/mona-lisa.jpg', null, null, 0, 2.4, PART.hz + 0.02, 0, 1.45, 2.05);
-                const glass = new THREE.Mesh(
-                    new THREE.PlaneGeometry(1.7, 2.3),
-                    new THREE.MeshPhysicalMaterial({ transparent: true, opacity: 0.08, roughness: 0.05, metalness: 0, transmission: 0.9 }));
-                glass.position.set(0, 2.4, PART.hz + 0.12); scene.add(glass);
-                const ml = new THREE.SpotLight(0xffffff, 60, 16, Math.PI / 7, 0.5, 1.0);
+                // Mona Lisa on the entrance-facing side (brighter so the famous portrait reads)
+                addPainting('images/gallery/mona-lisa.jpg', null, null, 0, 2.4, PART.hz + 0.02, 0, 1.45, 2.05, 1.15);
+                const ml = new THREE.SpotLight(0xffffff, 36, 16, Math.PI / 6, 0.5, 1.0);
                 ml.position.set(0, RH - 1, 6); ml.target.position.set(0, 2.4, PART.hz); scene.add(ml); scene.add(ml.target);
 
                 // Projects along the two long side walls, alternating
