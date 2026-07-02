@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snake AI</title>
+  <style>
+    :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--card:#e6ebef;--border:#c6cad2;--accent:#2563eb;--code-bg:#0b1020;--code-text:#e5e7eb;--max:980px;--radius:14px;}
+    *{box-sizing:border-box;}
+    body{margin:30px 0 0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg);line-height:1.6;}
+    a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+    .container{max-width:var(--max);margin:0 auto;padding:28px 18px 60px;}
+    header{text-align:center;padding:18px 0 10px;}
+    header h1{margin:14px 0 6px;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-0.02em;}
+    header p{margin:0 auto;max-width:70ch;color:var(--muted);font-size:1.05rem;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+    h2{margin:30px 0 10px;font-size:1.6rem;} h3{margin:18px 0 8px;font-size:1.2rem;}
+    .lead{font-size:1.05rem;color:var(--muted);margin-top:6px;}
+    figure{margin:14px auto;text-align:center;} figure img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);}
+    figcaption{margin-top:8px;color:var(--muted);font-size:0.95rem;}
+    ul{margin:8px 0 0 1.1rem;padding:0;} li{margin:8px 0;}
+    .callout{border-left:4px solid var(--accent);padding:12px 14px;background:#eff6ff;border-radius:12px;margin:14px 0;}
+    pre{background:var(--code-bg);color:var(--code-text);padding:14px;border-radius:12px;overflow-x:auto;border:1px solid rgba(255,255,255,0.08);margin:12px 0 0;}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+    .small{font-size:0.95rem;color:var(--muted);}
+    .top-nav{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:center;gap:20px;padding:12px 0;background-color:rgba(255,255,255,0.95);z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+    .top-nav a{text-decoration:none;color:#111;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;border:2px solid #111;border-radius:999px;padding:6px 18px;transition:all 0.3s ease;}
+    .top-nav a:hover{background-color:#111;color:#fff;}
+    .demo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+  </style>
+</head>
+<body>
+  <a href="../index.html#gallery" class="back-to-gallery" style="position:fixed;right:16px;bottom:16px;z-index:3000;background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.35);font-family:system-ui,Arial,sans-serif;">&larr; Back to Gallery</a>
+  <nav class="top-nav">
+    <a href="#overview">Overview</a>
+    <a href="#play">Watch / Play</a>
+    <a href="#how">How the AI works</a>
+    <a href="#survival">Survival</a>
+    <a href="#notes">Notes</a>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>Snake AI</h1>
+      <p>A Deep-Q agent that learned to play Snake from an eleven-number view of the world, kept alive by a flood-fill "survival instinct" that refuses to trap itself.</p>
+      <p class="lead">Below you can <a href="#play">watch the AI play</a> — or take the controls and see how hard it really is.</p>
+    </header>
+
+    <section id="overview">
+      <h2>Project Overview</h2>
+      <div class="card">
+        <p><strong>Snake AI</strong> trains a reinforcement-learning agent to play the arcade classic. A small PyTorch network reads a compact state and picks one of three relative moves — <em>go straight</em>, <em>turn right</em>, or <em>turn left</em> — and a flood-fill algorithm vetoes any choice that would seal the snake into a space too small to escape.</p>
+        <h3>Two brains, one snake</h3>
+        <ul>
+          <li><strong>The learner</strong> — a Deep-Q network that improves by playing thousands of games and remembering what led to food versus death.</li>
+          <li><strong>The guardian</strong> — a deterministic flood-fill "survival mask" that runs before every move so the network never has to learn the hard lesson "don't box yourself in".</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="play">
+      <h2>Watch the AI — or play it yourself</h2>
+      <div class="demo-card">
+        <p class="small">Use the buttons to switch between <strong>Watch AI</strong> and <strong>Play yourself</strong> (arrow keys or WASD). The panel shows the live 11-feature state the network reads, and the blue tint is the flood-fill region the AI checks before committing to a move.</p>
+        <div id="demo-root"></div>
+      </div>
+      <div class="callout"><strong>About this version:</strong> the trained network's weights can't run on a static page, but the two pure-algorithm pieces — the flood-fill survival check and the food-seeking policy — are ported straight from the project, with a tail-reachability guarantee standing in for the learned survival behavior. Try beating the AI's score by hand; it's harder than it looks.</div>
+    </section>
+
+    <section id="how">
+      <h2>How the AI works</h2>
+      <div class="card">
+        <h3>The 11-feature state</h3>
+        <p>Rather than raw pixels, the agent sees eleven booleans — cheap to compute and enough to play well:</p>
+        <ul>
+          <li><strong>Danger straight / right / left</strong> — is the cell ahead of each relative direction a wall or body?</li>
+          <li><strong>Direction</strong> — one-hot of the current heading (left / right / up / down).</li>
+          <li><strong>Food direction</strong> — is the food to the left, right, up, and/or down of the head?</li>
+        </ul>
+        <p>The live inspector in the demo lights these up as the snake moves. The full project extends the danger sensors two cells out for a little more foresight.</p>
+        <h3>The network</h3>
+        <pre><code>Linear(11 → 256) → ReLU → Dropout
+Linear(256 → 256) → ReLU → Dropout
+Linear(256 → 3)          # Q-value for straight / right / left</code></pre>
+        <p>Trained with Q-learning: reward +10 for eating, &minus;10 for dying, and a small nudge toward the food each step.</p>
+      </div>
+    </section>
+
+    <section id="survival">
+      <h2>The survival flood fill</h2>
+      <div class="card">
+        <p>Before each move the agent simulates all three actions and, from each resulting head position, flood-fills the reachable free cells. If that count is smaller than the snake's own length, the move is a trap and gets masked out:</p>
+        <pre><code>for action in (straight, right, left):
+    head' = simulate(action)
+    reachable = flood_fill(head')          # BFS over free cells
+    safe[action] = reachable &gt;= len(snake) * margin</code></pre>
+        <p>This is why the snake can weave through tight gaps without dying — the guarantee is algorithmic, not learned. The demo draws that reachable region live so you can see the AI's "escape space" shrink and grow.</p>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2>Notes</h2>
+      <div class="card">
+        <p>The learner lives in <code>agent.py</code> / <code>model.py</code>, the survival mask in <code>survival.py</code>, a hand-written baseline in <code>simple_agent.py</code>, and <code>watch.py</code> replays any saved model at human speed. Saved runs (<code>model.pth</code>, <code>107.pth</code>, <code>85.pth</code>) capture different amounts of training.</p>
+        <p class="small">This page is part of a portfolio; the interactive snake is a browser reimplementation so it runs with no install.</p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { mount } from './demos/snake.js';
+    mount(document.getElementById('demo-root'));
+  </script>
+</body>
+</html>

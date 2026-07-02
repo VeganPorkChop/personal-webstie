@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connect Four AI</title>
+  <style>
+    :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--card:#e6ebef;--border:#c6cad2;--accent:#2563eb;--code-bg:#0b1020;--code-text:#e5e7eb;--max:980px;--radius:14px;}
+    *{box-sizing:border-box;}
+    body{margin:30px 0 0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg);line-height:1.6;}
+    a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+    .container{max-width:var(--max);margin:0 auto;padding:28px 18px 60px;}
+    header{text-align:center;padding:18px 0 10px;}
+    header h1{margin:14px 0 6px;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-0.02em;}
+    header p{margin:0 auto;max-width:70ch;color:var(--muted);font-size:1.05rem;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+    h2{margin:30px 0 10px;font-size:1.6rem;} h3{margin:18px 0 8px;font-size:1.2rem;}
+    .lead{font-size:1.05rem;color:var(--muted);margin-top:6px;}
+    figure{margin:14px auto;text-align:center;} figure img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);}
+    figcaption{margin-top:8px;color:var(--muted);font-size:0.95rem;}
+    ul{margin:8px 0 0 1.1rem;padding:0;} li{margin:8px 0;}
+    .callout{border-left:4px solid var(--accent);padding:12px 14px;background:#eff6ff;border-radius:12px;margin:14px 0;}
+    pre{background:var(--code-bg);color:var(--code-text);padding:14px;border-radius:12px;overflow-x:auto;border:1px solid rgba(255,255,255,0.08);margin:12px 0 0;}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+    .small{font-size:0.95rem;color:var(--muted);}
+    .top-nav{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:center;gap:20px;padding:12px 0;background-color:rgba(255,255,255,0.95);z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+    .top-nav a{text-decoration:none;color:#111;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;border:2px solid #111;border-radius:999px;padding:6px 18px;transition:all 0.3s ease;}
+    .top-nav a:hover{background-color:#111;color:#fff;}
+    .demo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+  </style>
+</head>
+<body>
+  <a href="../index.html#gallery" class="back-to-gallery" style="position:fixed;right:16px;bottom:16px;z-index:3000;background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.35);font-family:system-ui,Arial,sans-serif;">&larr; Back to Gallery</a>
+  <nav class="top-nav">
+    <a href="#overview">Overview</a>
+    <a href="#play">Play</a>
+    <a href="#how">How the AI works</a>
+    <a href="#training">Training</a>
+    <a href="#notes">Notes</a>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>Connect Four AI</h1>
+      <p>A convolutional Deep-Q network that taught itself Connect Four through self-play — no opening books, no hand-written strategy, just millions of games and a reward signal.</p>
+      <p class="lead">Scroll down to <a href="#play">play a game against it</a> right in the browser.</p>
+    </header>
+
+    <section id="overview">
+      <h2>Project Overview</h2>
+      <div class="card">
+        <p><strong>Connect Four AI</strong> is a reinforcement-learning agent that plays the classic 6&times;7 drop game. It is built in PyTorch as a <strong>Deep-Q Network (DQN)</strong>: a convolutional network estimates, for the current board, how good it is to drop a disc in each of the seven columns. The agent starts knowing only the rules and improves by playing itself.</p>
+        <h3>Highlights</h3>
+        <ul>
+          <li><strong>Convolutional Q-network</strong> — reads the board as an image so a pattern learned in one place transfers everywhere.</li>
+          <li><strong>Self-play training</strong> — after an initial phase against a "smart-random" opponent, the agent trains against copies of itself.</li>
+          <li><strong>Reward shaping</strong> — small hints for building threats, forks, and center control accelerate learning without overriding the real win signal.</li>
+          <li><strong>Target network + replay buffer</strong> — the usual DQN stabilizers keep learning from diverging.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="play">
+      <h2>Play against it</h2>
+      <div class="demo-card">
+        <p class="small">You are <strong>yellow</strong> and move first — click a column to drop a disc. The AI is <strong>red</strong>. The bars on the right show the search's score for each column, the browser stand-in for the network's seven Q-values.</p>
+        <div id="demo-root"></div>
+      </div>
+      <div class="callout"><strong>About this playable version:</strong> the trained PyTorch network can't run on a static web page, so this in-browser opponent reproduces the same game with a <strong>minimax + alpha-beta search</strong> whose evaluation reuses the real project's threat/fork/center reward shaping. It plays a strong, honest game — but the write-up below describes the actual DQN.</div>
+    </section>
+
+    <section id="how">
+      <h2>How the AI works</h2>
+      <div class="card">
+        <h3>Board encoding — a 3-channel image</h3>
+        <p>The 6&times;7 board is fed to the network as a <code>(3, 6, 7)</code> tensor:</p>
+        <ul>
+          <li><strong>Channel 0:</strong> 1 where the agent has a disc.</li>
+          <li><strong>Channel 1:</strong> 1 where the opponent has a disc.</li>
+          <li><strong>Channel 2:</strong> 1 for columns that still have room.</li>
+        </ul>
+        <p>Keeping the two players in separate channels lets the network see "my pieces" and "their pieces" as distinct features. A <code>flip_state</code> trick swaps the channels on the opponent's turn, so the network only ever has to answer one question: <em>what's best for the player in channel 0?</em></p>
+
+        <figure>
+          <svg viewBox="0 0 720 200" width="100%" style="max-width:720px;background:#0b1020;border-radius:12px" xmlns="http://www.w3.org/2000/svg" font-family="system-ui" font-size="13">
+            <g fill="#e5e7eb" text-anchor="middle">
+              <rect x="20" y="70" width="90" height="60" rx="6" fill="#1f2937"/><text x="65" y="95">Board</text><text x="65" y="112">3×6×7</text>
+              <rect x="150" y="60" width="110" height="80" rx="6" fill="#2563eb"/><text x="205" y="95" fill="#fff">Conv 3→64</text><text x="205" y="112" fill="#dbeafe">3×3</text>
+              <rect x="300" y="60" width="110" height="80" rx="6" fill="#2563eb"/><text x="355" y="95" fill="#fff">Conv 64→128</text><text x="355" y="112" fill="#dbeafe">3×3</text>
+              <rect x="450" y="60" width="110" height="80" rx="6" fill="#7c3aed"/><text x="505" y="95" fill="#fff">Dense 256</text><text x="505" y="112" fill="#ede9fe">+dropout</text>
+              <rect x="600" y="70" width="100" height="60" rx="6" fill="#16a34a"/><text x="650" y="95" fill="#fff">7 Q-values</text><text x="650" y="112" fill="#dcfce7">one / column</text>
+            </g>
+            <g stroke="#6b7280" stroke-width="2" marker-end="url(#a)">
+              <line x1="110" y1="100" x2="150" y2="100"/><line x1="260" y1="100" x2="300" y2="100"/>
+              <line x1="410" y1="100" x2="450" y2="100"/><line x1="560" y1="100" x2="600" y2="100"/>
+            </g>
+            <defs><marker id="a" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6b7280"/></marker></defs>
+          </svg>
+          <figcaption>The convolutional Q-network: two conv layers detect local patterns (pairs, threats, forks) then a dense head scores each column.</figcaption>
+        </figure>
+
+        <h3>Choosing a move</h3>
+        <p>At play time the network outputs seven Q-values; illegal (full) columns are masked to &minus;&infin; and the agent drops in the best remaining column. During training it uses &epsilon;-greedy exploration, annealing &epsilon; from 1.0 down to 0.05 over 8,000 games so it keeps exploring well into self-play.</p>
+      </div>
+    </section>
+
+    <section id="training">
+      <h2>Training</h2>
+      <div class="card">
+        <h3>Reward shaping</h3>
+        <p>The real reward is simple: +1 for a win, 0 for a draw. But sparse rewards learn slowly, so the environment adds small shaped hints that stay well below the win signal:</p>
+        <pre><code>center preference        +0.01 · (3 - |col - 3|)/3
+build a three-in-a-row   +0.10 each
+build a two              +0.02 each
+fork (two threes)        +0.15
+leave opponent a three   -0.12 each
+opponent can win next    -0.50
+pointless vertical stack -0.05 · (run - 1)</code></pre>
+        <p>These same ideas drive the evaluation of the playable browser opponent above.</p>
+        <h3>Stability tricks</h3>
+        <ul>
+          <li><strong>Replay buffer</strong> of 100k transitions, sampled in batches of 1,024.</li>
+          <li><strong>Target network</strong> copied from the online network every 500 games.</li>
+          <li><strong>Random phase</strong> of 3,000 games vs a smart-random opponent before self-play, so early learning sees legal, varied positions.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2>Notes</h2>
+      <div class="card">
+        <p>The training loop, network, and self-play harness live in <code>agent.py</code>, <code>model.py</code>, and <code>game.py</code>. Saved checkpoints (<code>model.pth</code>, plus earlier attempts) capture the weights at different points in training.</p>
+        <p class="small">This page is part of a portfolio; the interactive opponent is a faithful-in-spirit browser reimplementation so you can play without any install.</p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { mount } from './demos/connect_four.js';
+    mount(document.getElementById('demo-root'));
+  </script>
+</body>
+</html>

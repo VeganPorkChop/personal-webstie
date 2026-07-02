@@ -364,6 +364,40 @@
         #enter-prompt p { margin: 0; color: #cbbfb0; }
         #enter-prompt.hide { display: none; }
 
+        /* ---------- in-gallery sim overlay (walk through an arch) ---------- */
+        #sim-overlay {
+            position: fixed; inset: 0; z-index: 1800; display: none;
+            background: rgba(8,6,10,.86); backdrop-filter: blur(3px);
+            overflow-y: auto; font-family: system-ui, Arial, sans-serif;
+        }
+        #sim-overlay.active { display: block; }
+        .sim-shell {
+            max-width: 1040px; margin: 40px auto; background: #fff; color: #111;
+            border-radius: 16px; box-shadow: 0 30px 80px rgba(0,0,0,.6); overflow: hidden;
+        }
+        .sim-bar {
+            display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+            background: #12100f; color: #fff; position: sticky; top: 0; z-index: 2;
+        }
+        .sim-bar h3 { margin: 0; font-size: 1.15rem; flex: 1; }
+        .sim-bar .tag {
+            font-size: .7rem; font-weight: 800; letter-spacing: .08em; padding: 3px 8px;
+            border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #1a1206;
+        }
+        .sim-bar a, .sim-bar button {
+            font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+            border-radius: 999px; padding: 7px 15px; border: 2px solid rgba(255,255,255,.4);
+            background: transparent; color: #fff;
+        }
+        .sim-bar a:hover, .sim-bar button:hover { background: rgba(255,255,255,.12); }
+        .sim-bar .primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #1a1206; border-color: transparent; }
+        .sim-body { padding: 22px; }
+        .sim-lede { color: #6b7280; margin: 0 0 16px; }
+        .sim-card-img {
+            width: 100%; max-height: 340px; object-fit: cover; border-radius: 12px;
+            border: 1px solid #d7dce2; margin-bottom: 14px;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .reveal { opacity: 1; transform: none; transition: none; }
             .scroll-cue { animation: none; }
@@ -427,9 +461,21 @@
     <div id="gallery-hud" style="display:none">
         <div class="crosshair" id="crosshair"></div>
         <div class="hud-title" id="hud-title"></div>
-        <div class="hud-help">WASD to move &middot; mouse to look &middot; click art to open &middot; Esc to release</div>
+        <div class="hud-help">WASD to move &middot; mouse to look &middot; walk through an archway to open a project &middot; Esc to release</div>
         <button class="hud-leave" id="leave-gallery" type="button">Leave gallery</button>
-        <div id="enter-prompt"><h3>Click to look around</h3><p>WASD to move &middot; click art to open &middot; press Esc again (or &ldquo;Leave gallery&rdquo;) to exit</p></div>
+        <div id="enter-prompt"><h3>Click to look around</h3><p>WASD to move &middot; walk through any glowing archway to open that project &middot; press Esc again (or &ldquo;Leave gallery&rdquo;) to exit</p></div>
+    </div>
+
+    <div id="sim-overlay" aria-hidden="true">
+        <div class="sim-shell">
+            <div class="sim-bar">
+                <span class="tag" id="sim-tag" style="display:none">&#9654; PLAYABLE</span>
+                <h3 id="sim-title"></h3>
+                <a class="primary" id="sim-writeup" href="#">Full write-up &rarr;</a>
+                <button id="sim-back" type="button">&larr; Back to gallery</button>
+            </div>
+            <div class="sim-body" id="sim-body"></div>
+        </div>
     </div>
 
     <script>
@@ -1063,14 +1109,22 @@
             const THREE = await import('three');
             const { PointerLockControls } = await import('three/addons/controls/PointerLockControls.js');
 
+            // Every project is a walk-through archway. The four AI/ML projects are
+            // `interactive` — their arch opens a playable sim (demos/<demo>.js); the rest
+            // open a launch card that links to the full write-up. `thumb` = procedural
+            // poster art (no image file needed); `img` = an existing overview image.
             const PROJECTS = [
-                { t: 'Bad Mobile Game', href: 'projects/Bad Mobile Game.html', img: 'images/projectoverview/BAD_MOBILE_GAME_BACKGROUND_IMAGE.png' },
-                { t: 'Bartending App', href: 'projects/Bartending App.html', img: 'images/projectoverview/BARTENDING_APP_BACKGROUND_IMAGE.png' },
-                { t: 'Auto Ball Balancer', href: 'projects/Auto Ball Balancer.html', img: 'images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg' },
-                { t: 'Delta Arm', href: 'projects/Delta Arm.html', img: 'images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png' },
-                { t: 'Mishap D', href: 'projects/Mishap D.html', img: 'images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg' },
-                { t: 'Restaurant Scheduler', href: 'projects/Restaurant Scheduler.html', img: 'images/projectoverview/RESTAURANT_SCHEDULER_BACKGROUND_IMAGE.png' },
-                { t: 'Threaded Items Transfer System', href: 'projects/Threaded Items Transfer System.html', img: 'images/projectoverview/THREADED_ITEMS_TRANSFER_SYSTEM_BACKGROUND_IMAGE.png' }
+                { t: 'Connect Four AI', href: 'projects/Connect Four AI.html', interactive: true, demo: 'connect_four', thumb: 'c4', blurb: 'A convolutional Deep-Q network that taught itself Connect Four by self-play.' },
+                { t: 'Snake AI', href: 'projects/Snake AI.html', interactive: true, demo: 'snake', thumb: 'snake', blurb: 'A Deep-Q snake kept alive by a flood-fill survival instinct — watch it or play it.' },
+                { t: 'Scrabble AI', href: 'projects/Scrabble AI.html', interactive: true, demo: 'scrabble', thumb: 'scrabble', blurb: 'A full Scrabble engine: GADDAG move generation, premium scoring, and a value net.' },
+                { t: 'DFT Bomb Finder', href: 'projects/DFT Bomb Finder.html', interactive: true, demo: 'bombfinder', thumb: 'seismo', blurb: 'Explosion vs earthquake from a seismogram, using the Fourier spectrum.' },
+                { t: 'Bad Mobile Game', href: 'projects/Bad Mobile Game.html', img: 'images/projectoverview/BAD_MOBILE_GAME_BACKGROUND_IMAGE.png', blurb: 'A compact Android sliding-tile puzzle built with Jetpack Compose.' },
+                { t: 'Bartending App', href: 'projects/Bartending App.html', img: 'images/projectoverview/BARTENDING_APP_BACKGROUND_IMAGE.png', blurb: 'A bartending companion app.' },
+                { t: 'Auto Ball Balancer', href: 'projects/Auto Ball Balancer.html', img: 'images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg', blurb: 'A control-systems rig that balances a ball.' },
+                { t: 'Delta Arm', href: 'projects/Delta Arm.html', img: 'images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png', blurb: 'A delta-configuration robot arm.' },
+                { t: 'Mishap D', href: 'projects/Mishap D.html', img: 'images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg', blurb: 'A game project.' },
+                { t: 'Restaurant Scheduler', href: 'projects/Restaurant Scheduler.html', img: 'images/projectoverview/RESTAURANT_SCHEDULER_BACKGROUND_IMAGE.png', blurb: 'A staff scheduling tool for restaurants.' },
+                { t: 'Threaded Items Transfer System', href: 'projects/Threaded Items Transfer System.html', img: 'images/projectoverview/THREADED_ITEMS_TRANSFER_SYSTEM_BACKGROUND_IMAGE.png', blurb: 'A concurrent item-transfer system.' }
             ];
 
             const galleryEl = document.getElementById('gallery');
@@ -1082,7 +1136,7 @@
             const titleEl = document.getElementById('hud-title');
 
             // Room dimensions (x = width, z = length, y = height)
-            const RW = 18, RL = 34, RH = 8;
+            const RW = 18, RL = 52, RH = 8;   // longer hall to hold 11 archways
             const HALFW = RW / 2, HALFL = RL / 2;
             const PLAYER_R = 0.6, EYE = 1.6;
             const PART = { x0: -4, x1: 4, hz: 0.4, h: 5 };   // central partition half-extents
@@ -1097,6 +1151,8 @@
             const direction = new THREE.Vector3();
             const paintings = [];
             let hovered = null;
+            const arches = [];            // { project, tx, tz } walk-through triggers
+            let simOpen = false, armed = true, demoHandle = null, nearArch = null;
 
             function makeWoodTexture() {
                 const c = document.createElement('canvas'); c.width = 512; c.height = 512;
@@ -1151,6 +1207,83 @@
                 scene.add(group);
                 if (href) { art.userData.href = href; art.userData.title = title; paintings.push(art); }
                 return group;
+            }
+
+            // Procedural poster art for the four AI projects (no image files needed).
+            function makeThumb(kind) {
+                const c = document.createElement('canvas'); c.width = 512; c.height = 340;
+                const x = c.getContext('2d');
+                x.fillStyle = '#0d1424'; x.fillRect(0, 0, 512, 340);
+                if (kind === 'c4') {
+                    x.fillStyle = '#1b3a8f'; x.fillRect(56, 40, 400, 260);
+                    const cols = ['#e74c3c', '#f1c40f', 0, 0]; let n = 0;
+                    for (let r = 0; r < 5; r++) for (let cc = 0; cc < 7; cc++) {
+                        const v = (r + cc) % 3; x.beginPath();
+                        x.arc(86 + cc * 56, 74 + r * 50, 20, 0, 7); x.fillStyle = v === 0 ? '#e74c3c' : v === 1 ? '#f1c40f' : '#0e214f'; x.fill();
+                    }
+                } else if (kind === 'snake') {
+                    x.fillStyle = '#10b981'; for (let i = 0; i < 8; i++) x.fillRect(120 + i * 26, 150, 22, 22);
+                    x.fillStyle = '#34d399'; x.fillRect(120 + 8 * 26, 150, 22, 22);
+                    x.fillStyle = '#f59e0b'; x.fillRect(360, 96, 22, 22);
+                } else if (kind === 'scrabble') {
+                    const word = 'SCRABBLE'.split(''); x.font = 'bold 44px Georgia';
+                    for (let i = 0; i < word.length; i++) { x.fillStyle = '#f7e2ad'; x.fillRect(40 + i * 54, 130, 48, 48); x.fillStyle = '#3a2a12'; x.fillText(word[i], 52 + i * 54, 168); }
+                } else { // seismo
+                    x.strokeStyle = '#34d399'; x.lineWidth = 2; x.beginPath();
+                    for (let i = 0; i < 512; i++) { const t = i / 40; const env = i > 180 ? Math.exp(-(i - 180) / 120) : 0.05; const y = 170 + Math.sin(t * 6) * env * 120 + (Math.random() - 0.5) * 6; i ? x.lineTo(i, y) : x.moveTo(i, y); }
+                    x.stroke(); x.strokeStyle = '#f59e0b'; x.setLineDash([5, 4]); x.beginPath(); x.moveTo(180, 20); x.lineTo(180, 320); x.stroke(); x.setLineDash([]);
+                }
+                const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+            }
+
+            // A walk-through archway. Opening faces +z in local space; group is rotated
+            // so the opening faces into the hall. Registers a trigger at `arches`.
+            function makeArch(project, x, z, ry) {
+                const g = new THREE.Group();
+                const OW = 2.8, PW = 0.42, PH = 4.2, PD = 0.7;
+                const stone = new THREE.MeshStandardMaterial({ color: 0xe8dcc2, roughness: 0.92 });
+                const half = OW / 2 + PW / 2;
+                for (const sx of [-half, half]) {
+                    const p = new THREE.Mesh(new THREE.BoxGeometry(PW, PH, PD), stone);
+                    p.position.set(sx, PH / 2, 0); g.add(p);
+                }
+                const lintel = new THREE.Mesh(new THREE.BoxGeometry(OW + PW * 2 + 0.3, 0.55, PD), stone);
+                lintel.position.set(0, PH + 0.28, 0); g.add(lintel);
+
+                // poster (image or procedural thumb), emissive so it reads in the dim hall
+                const tex = project.img ? loader.load(project.img) : makeThumb(project.thumb);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                const poster = new THREE.Mesh(
+                    new THREE.PlaneGeometry(OW - 0.15, 1.9),
+                    new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.75, roughness: 0.7 }));
+                poster.position.set(0, 2.55, PD / 2 + 0.02); g.add(poster);
+
+                // title plate under the poster
+                const title = new THREE.Mesh(
+                    new THREE.PlaneGeometry(OW, 0.5),
+                    new THREE.MeshBasicMaterial({ map: makeLabel(project.t), transparent: true }));
+                title.position.set(0, 1.42, PD / 2 + 0.03); g.add(title);
+
+                // glowing threshold strip on the floor = the "step through here" cue
+                const glow = project.interactive ? 0xffc46b : 0x8fb7ff;
+                const thr = new THREE.Mesh(
+                    new THREE.PlaneGeometry(OW, 1.0),
+                    new THREE.MeshBasicMaterial({ color: glow, transparent: true, opacity: 0.5 }));
+                thr.rotation.x = -Math.PI / 2; thr.position.set(0, 0.03, PD / 2 + 0.6); g.add(thr);
+
+                if (project.interactive) {
+                    const tag = new THREE.Mesh(
+                        new THREE.PlaneGeometry(1.6, 0.34),
+                        new THREE.MeshBasicMaterial({ map: makeLabel('▶ PLAYABLE'), transparent: true }));
+                    tag.position.set(0, 3.62, PD / 2 + 0.03); g.add(tag);
+                }
+
+                g.position.set(x, 0, z); g.rotation.y = ry; scene.add(g);
+                // trigger point: just inside the opening, in world space
+                const tx = x + Math.sin(ry) * (PD / 2 + 0.6);
+                const tz = z + Math.cos(ry) * (PD / 2 + 0.6);
+                arches.push({ project, tx, tz });
+                return g;
             }
 
             function build() {
@@ -1215,21 +1348,22 @@
                 const ml = new THREE.SpotLight(0xffffff, 36, 16, Math.PI / 6, 0.5, 1.0);
                 ml.position.set(0, RH - 1, 6); ml.target.position.set(0, 2.4, PART.hz); scene.add(ml); scene.add(ml.target);
 
-                // Projects along the two long side walls, alternating
+                // Projects as walk-through archways along the two long side walls.
+                const LANES = Math.ceil(PROJECTS.length / 2);             // 6 lanes down each side
                 PROJECTS.forEach((pr, i) => {
                     const left = i % 2 === 0;
-                    const x = left ? -HALFW + 0.15 : HALFW - 0.15;
+                    const x = left ? -HALFW + 0.36 : HALFW - 0.36;
                     const ry = left ? Math.PI / 2 : -Math.PI / 2;
-                    const lane = Math.floor(i / 2);                       // 0..3 down the hall
-                    const z = -HALFL + 6 + lane * ((RL - 12) / 3);
-                    addPainting(pr.img, pr.t, pr.href, x, 2.6, z, ry, 2.4, 1.6);
+                    const lane = Math.floor(i / 2);
+                    const z = -HALFL + 7 + lane * ((RL - 14) / (LANES - 1));
+                    makeArch(pr, x, z, ry);
                 });
 
                 // Benches down the middle
                 const benchMat = new THREE.MeshStandardMaterial({ color: 0x3a2a1a, roughness: 0.7 });
                 for (let i = -1; i <= 1; i += 2) {
                     const b = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.5, 3), benchMat);
-                    b.position.set(0, 0.25, i * 7.5); scene.add(b);
+                    b.position.set(0, 0.25, i * 9); scene.add(b);
                 }
 
                 built = true;
@@ -1257,6 +1391,10 @@
 
             function onKey(e, down) {
                 const k = e.key.toLowerCase();
+                if (simOpen) {                       // sim eats keys; Esc closes it back to the hall
+                    if (k === 'escape' && down) closeSim();
+                    return;
+                }
                 if (k === 'w' || k === 'a' || k === 's' || k === 'd') { keys[k] = down; e.preventDefault(); }
                 // Esc releases the mouse first; pressing it again (mouse already free) leaves the gallery.
                 else if (k === 'escape' && down && !controls.isLocked) { leave(); }
@@ -1279,6 +1417,8 @@
                     return;                                        // no walking while turning
                 }
 
+                if (simOpen) { renderer.render(scene, camera); return; }   // frozen while a sim is open
+
                 velocity.x -= velocity.x * 9 * dt;
                 velocity.z -= velocity.z * 9 * dt;
                 direction.z = (keys.w ? 1 : 0) - (keys.s ? 1 : 0);
@@ -1291,26 +1431,71 @@
                 controls.moveForward(-velocity.z * dt);
                 clampPlayer();
 
-                raycaster.setFromCamera({ x: 0, y: 0 }, camera);
-                const hits = raycaster.intersectObjects(paintings, false);
-                const hit = hits.length ? hits[0].object : null;
-                if (hit !== hovered) {
-                    hovered = hit;
-                    crosshair.classList.toggle('hot', !!hovered);
-                    if (hovered) { titleEl.textContent = hovered.userData.title; titleEl.classList.add('show'); }
-                    else titleEl.classList.remove('show');
+                // Walk into an archway's opening to open that project.
+                const p = controls.getObject().position;
+                let best = null, bestD = Infinity;
+                for (const a of arches) {
+                    const d = Math.hypot(p.x - a.tx, p.z - a.tz);
+                    if (d < bestD) { bestD = d; best = a; }
                 }
+                nearArch = best;
+                if (best && bestD < 4) {
+                    titleEl.textContent = (best.project.interactive ? '▶ ' : '') + best.project.t +
+                        (bestD < 1.3 ? '' : '  —  walk in');
+                    titleEl.classList.add('show');
+                    crosshair.classList.toggle('hot', bestD < 1.3);
+                } else { titleEl.classList.remove('show'); crosshair.classList.remove('hot'); }
+
+                if (armed && best && bestD < 1.25) { openSim(best.project); }
+                if (!armed && bestD > 2.2) armed = true;   // re-arm once clear of the arch
 
                 renderer.render(scene, camera);
             }
 
-            // Click while locked + aiming at a painting -> open the project
-            document.addEventListener('mousedown', () => {
-                if (active && controls && controls.isLocked && hovered) {
-                    window.location.href = hovered.userData.href;
+            promptEl.addEventListener('click', () => { if (controls && !simOpen) controls.lock(); });
+
+            // ── in-gallery sim overlay ──
+            const simOverlay = document.getElementById('sim-overlay');
+            const simBody = document.getElementById('sim-body');
+            const simTitle = document.getElementById('sim-title');
+            const simTag = document.getElementById('sim-tag');
+            const simWriteup = document.getElementById('sim-writeup');
+
+            async function openSim(project) {
+                simOpen = true; armed = false;
+                if (controls && controls.isLocked) controls.unlock();
+                titleEl.classList.remove('show'); crosshair.classList.remove('hot');
+                simTitle.textContent = project.t;
+                simWriteup.href = project.href;
+                simTag.style.display = project.interactive ? '' : 'none';
+                simBody.innerHTML = '';
+                simOverlay.classList.add('active');
+
+                if (project.interactive) {
+                    try {
+                        const mod = await import(`./projects/demos/${project.demo}.js`);
+                        demoHandle = mod.mount(simBody);
+                    } catch (err) {
+                        simBody.innerHTML = `<p class="sim-lede">Couldn't load the sim (${err.message}). Try the full write-up.</p>`;
+                    }
+                } else {
+                    const src = project.img || '';
+                    simBody.innerHTML =
+                        (src ? `<img class="sim-card-img" src="${src}" alt="${project.t}">` : '') +
+                        `<p class="sim-lede">${project.blurb || ''}</p>` +
+                        `<a class="sim-bar primary" style="display:inline-block;padding:9px 18px;border-radius:999px" href="${project.href}">Open the full write-up &rarr;</a>`;
                 }
-            });
-            promptEl.addEventListener('click', () => { if (controls) controls.lock(); });
+            }
+
+            function closeSim() {
+                if (demoHandle && demoHandle.destroy) { try { demoHandle.destroy(); } catch (e) {} }
+                demoHandle = null;
+                simBody.innerHTML = '';
+                simOverlay.classList.remove('active');
+                simOpen = false;
+                if (active) promptEl.classList.remove('hide');   // click to look around again
+            }
+            document.getElementById('sim-back').addEventListener('click', closeSim);
 
             function leave() {
                 active = false;
@@ -1355,6 +1540,14 @@
                 window.addEventListener('keyup', ku);
                 clock.getDelta();              // reset dt so the first frame doesn't lurch
                 if (!rafId) animate();
+            };
+
+            // Debug/testing hook (harmless; no UI): move the player, inspect arches.
+            window.__galleryDebug = {
+                get arches() { return arches; },
+                teleport: (x, z) => controls.getObject().position.set(x, EYE, z),
+                isSimOpen: () => simOpen,
+                openSim, closeSim,
             };
 
             // Arriving from a project page's "Back to Gallery" button drops you straight back in.

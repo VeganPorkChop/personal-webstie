@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scrabble AI</title>
+  <style>
+    :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--card:#e6ebef;--border:#c6cad2;--accent:#2563eb;--code-bg:#0b1020;--code-text:#e5e7eb;--max:980px;--radius:14px;}
+    *{box-sizing:border-box;}
+    body{margin:30px 0 0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg);line-height:1.6;}
+    a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+    .container{max-width:var(--max);margin:0 auto;padding:28px 18px 60px;}
+    header{text-align:center;padding:18px 0 10px;}
+    header h1{margin:14px 0 6px;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-0.02em;}
+    header p{margin:0 auto;max-width:70ch;color:var(--muted);font-size:1.05rem;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+    h2{margin:30px 0 10px;font-size:1.6rem;} h3{margin:18px 0 8px;font-size:1.2rem;}
+    .lead{font-size:1.05rem;color:var(--muted);margin-top:6px;}
+    figure{margin:14px auto;text-align:center;} figure img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);}
+    figcaption{margin-top:8px;color:var(--muted);font-size:0.95rem;}
+    ul{margin:8px 0 0 1.1rem;padding:0;} li{margin:8px 0;}
+    .callout{border-left:4px solid var(--accent);padding:12px 14px;background:#eff6ff;border-radius:12px;margin:14px 0;}
+    pre{background:var(--code-bg);color:var(--code-text);padding:14px;border-radius:12px;overflow-x:auto;border:1px solid rgba(255,255,255,0.08);margin:12px 0 0;}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+    .small{font-size:0.95rem;color:var(--muted);}
+    .top-nav{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:center;gap:20px;padding:12px 0;background-color:rgba(255,255,255,0.95);z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+    .top-nav a{text-decoration:none;color:#111;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;border:2px solid #111;border-radius:999px;padding:6px 18px;transition:all 0.3s ease;}
+    .top-nav a:hover{background-color:#111;color:#fff;}
+    .demo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
+  </style>
+</head>
+<body>
+  <a href="../index.html#gallery" class="back-to-gallery" style="position:fixed;right:16px;bottom:16px;z-index:3000;background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.35);font-family:system-ui,Arial,sans-serif;">&larr; Back to Gallery</a>
+  <nav class="top-nav">
+    <a href="#overview">Overview</a>
+    <a href="#play">Try the engine</a>
+    <a href="#how">Move generation</a>
+    <a href="#scoring">Scoring</a>
+    <a href="#notes">Notes</a>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>Scrabble AI</h1>
+      <p>A full Scrabble engine — premium board, exhaustive legal-move generation over the tournament word list, complete cross-word scoring, and a neural network that learned move value from self-play.</p>
+      <p class="lead">Below, <a href="#play">give the engine a rack</a> and watch it rank its best plays.</p>
+    </header>
+
+    <section id="overview">
+      <h2>Project Overview</h2>
+      <div class="card">
+        <p><strong>Scrabble AI</strong> is a complete implementation of the board game: a 15&times;15 board with double/triple letter and word premiums, the full <strong>TWL06</strong> tournament dictionary (178,690 words), a bag and rack manager, and an engine that can enumerate <em>every</em> legal move from a position. On top of that sits <strong>ScrabbleNet</strong>, a neural network trained by self-play to judge which of those moves is actually best.</p>
+        <h3>Pieces of the engine</h3>
+        <ul>
+          <li><strong>GADDAG move generator</strong> — the Appel &amp; Jacobson algorithm, backed by a GADDAG data structure, finds all legal plays.</li>
+          <li><strong>Full scoring</strong> — letter and word premiums, every cross-word formed, and the 50-point bingo bonus.</li>
+          <li><strong>ScrabbleNet</strong> — a three-stream network (board CNN + rack MLP + move MLP) that estimates each move's value.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="play">
+      <h2>Try the engine</h2>
+      <div class="demo-card">
+        <p class="small">Deal a random rack (or type your own — <code>?</code> is a blank), then hit <strong>Find best moves</strong>. The engine ranks its legal plays by score; hover to preview a play on the board, click to make it. Watch for the orange <strong>BINGO</strong> plays that use all seven tiles for a +50 bonus.</p>
+        <div id="demo-root"></div>
+      </div>
+      <div class="callout"><strong>About this version:</strong> the browser engine reproduces the real one with a trie-based generator (the same anchor + cross-check idea as the GADDAG) over a bundled TWL06 subset (all words of length 2&ndash;7), and it <strong>ports the real scoring code verbatim</strong>. Ranking here is by raw score; the full project's ScrabbleNet adds learned positional judgement on top.</div>
+    </section>
+
+    <section id="how">
+      <h2>Move generation</h2>
+      <div class="card">
+        <p>Generating legal Scrabble moves is the hard part. The algorithm rests on three ideas:</p>
+        <ul>
+          <li><strong>Anchors</strong> — any empty square touching an existing tile. On an empty board the center star is the only anchor. Words must pass through an anchor to connect to the board.</li>
+          <li><strong>Cross-checks</strong> — for each anchor, precompute which letters are even legal there, given the perpendicular word they would form. A letter that makes an invalid down-word is rejected before the main search ever tries it.</li>
+          <li><strong>Dictionary walk</strong> — starting from each anchor, walk the word structure letter by letter, placing rack tiles and matching existing board tiles, pruning the instant the prefix leaves the dictionary.</li>
+        </ul>
+        <p>The real project uses a <strong>GADDAG</strong>, which cleverly encodes words so the search can grow <em>leftward</em> from an anchor and then rightward in one traversal. The browser demo uses a plain prefix trie with explicit left/right handling — simpler, same result.</p>
+      </div>
+    </section>
+
+    <section id="scoring">
+      <h2>Scoring</h2>
+      <div class="card">
+        <p>Every play is scored exactly as in tournament Scrabble, and this logic is shared byte-for-byte between the real project and the demo:</p>
+        <ul>
+          <li><strong>Letter premiums</strong> (DL, TL) multiply a tile's value — but only on the turn it is first placed.</li>
+          <li><strong>Word premiums</strong> (DW, TW) multiply the whole word; two triple-words stack multiplicatively.</li>
+          <li><strong>Cross-words</strong> — every perpendicular word your new tiles create is scored too.</li>
+          <li><strong>Bingo</strong> — using all seven rack tiles in one turn adds 50 points.</li>
+        </ul>
+        <pre><code>score = Σ (letter × letter_premium) × word_premium
+        + Σ cross_words
+        + (50 if all 7 tiles used)</code></pre>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2>Notes</h2>
+      <div class="card">
+        <p>The engine spans <code>board.py</code>, <code>bag.py</code>, <code>gaddag.py</code>, <code>move_generator.py</code>, and <code>scoring.py</code>; the learning side is <code>model.py</code>, <code>features.py</code>, <code>selfplay.py</code>, and <code>train.py</code>, with checkpoints under <code>checkpoints/</code>. Play a real game against it with <code>play.py</code> or <code>play_gui.py</code>.</p>
+        <p class="small">This page is part of a portfolio; the interactive engine runs entirely in your browser against a bundled dictionary.</p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { mount } from './demos/scrabble.js';
+    mount(document.getElementById('demo-root'));
+  </script>
+</body>
+</html>
