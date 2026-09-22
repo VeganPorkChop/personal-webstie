@@ -178,6 +178,9 @@
         }
 
   </style>
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <style>pre code.hljs{ background: transparent; padding: 0; }</style>
 </head>
 
 <body>
@@ -191,7 +194,7 @@
 
     <header>
       <figure>
-        <img width="700" src="https://j.gifs.com/n5ZPN5.gif" alt="Delta arm CAD animation" />
+        <img width="700" src="../images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png" alt="Delta arm" />
       </figure>
 
       <h1>Delta Arm Project</h1>
@@ -208,11 +211,6 @@
         Its key feature is the use of parallelograms in the arms, which helps maintain the orientation of the end effector.
         <a href="https://en.wikipedia.org/wiki/Delta_robot" target="_blank" rel="noopener noreferrer">Source: Wikipedia</a>
       </p>
-
-      <figure>
-        <img height="220" src="https://thumbs.gfycat.com/ElasticUnderstatedErin-max-1mb.gif" alt="Delta robot example animation" />
-        <figcaption class="small">A classic delta robot motion example.</figcaption>
-      </figure>
     </section>
 
     <section>
@@ -522,5 +520,11 @@ step1Rot = int((DK.a));</code></pre>
     </footer>
 
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gradle.min.js"></script>
+  <script>
+    hljs.configure({ cssSelector: 'pre code[class*="language-"]:not(.language-mermaid):not(.language-text)', ignoreUnescapedHTML: true });
+    hljs.highlightAll();
+  </script>
 </body>
 </html>

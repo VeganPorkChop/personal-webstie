@@ -205,6 +205,9 @@
       scroll-margin-top: 90px;
     }
   </style>
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <style>pre code.hljs{ background: transparent; padding: 0; }</style>
 </head>
 
 <body>
@@ -685,5 +688,11 @@ adView.loadAd(new AdRequest.Builder().build());</code></pre>
     </section>
 
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gradle.min.js"></script>
+  <script>
+    hljs.configure({ cssSelector: 'pre code[class*="language-"]:not(.language-mermaid):not(.language-text)', ignoreUnescapedHTML: true });
+    hljs.highlightAll();
+  </script>
 </body>
 </html>

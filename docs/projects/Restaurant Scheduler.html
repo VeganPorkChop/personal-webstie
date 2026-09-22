@@ -193,6 +193,9 @@
       font-size: 0.95em;
     }
   </style>
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <style>pre code.hljs{ background: transparent; padding: 0; }</style>
 </head>
 
 <body>
@@ -583,5 +586,11 @@ scheduleReleaseDay  - the day of week (0=Sun) when the next schedule becomes act
     </footer>
 
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gradle.min.js"></script>
+  <script>
+    hljs.configure({ cssSelector: 'pre code[class*="language-"]:not(.language-mermaid):not(.language-text)', ignoreUnescapedHTML: true });
+    hljs.highlightAll();
+  </script>
 </body>
 </html>
