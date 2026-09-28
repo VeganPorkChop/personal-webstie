@@ -164,4 +164,14 @@
                 <li><a class="p11" href="projects/DFT Bomb Finder.html">DFT Bomb Finder &nbsp;&#9654; interactive</a></li>
             </ul>
         </div>
+        <script>
+            // Warm the cache for the hover backgrounds so they appear instantly instead of flashing blank on first hover.
+            window.addEventListener('load', () => {
+                const css = getComputedStyle(document.documentElement);
+                for (let i = 1; i <= 7; i++) {
+                    const m = css.getPropertyValue('--projectoverview-p' + i).match(/url\(["']?([^"')]+)/);
+                    if (m) new Image().src = m[1];
+                }
+            });
+        </script>
 </body>
