@@ -1,177 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Projects Overview</title>
-    <link rel="stylesheet" href="site-images.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Graham Gilbert-Schroeer</title>
+  <meta name="description" content="Engineering, software and machine learning projects by Graham Gilbert-Schroeer.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="brand-mark">GG</span><span class="brand-name">Graham Gilbert-Schroeer</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="projectoverview.html" aria-current="page">Projects</a>
+        <a href="index.html#about">About</a>
+        <a class="nav-cta" href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 12px 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
+  <main class="wrap">
+    <div class="page-head">
+      <p class="eyebrow">Portfolio</p>
+      <h1>Projects</h1>
+      <p>Engineering builds, software and machine-learning work. Each page is a full write-up with CAD, code, wiring and lessons learned.</p>
+    </div>
 
-        .top-nav a {
-            text-decoration: none;
-            color: #111;
-            font-size: 1rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #111;
-            border-radius: 999px;
-            padding: 6px 18px;
-            transition: all 0.3s ease;
-        }
+    <section class="group">
+      <div class="group-title"><h2>Mechanical &amp; electromechanical</h2><span>04</span></div>
+      <div class="project-grid">
+        <a class="project-card" href="projects/Mishap%20D.html">
+          <div class="thumb"><img src="images/projectoverview/MISHAP_D_BACKGROUND_IMAGE.jpg" alt="MISHAP-D payload bay mounted under a quadcopter" loading="lazy" style="object-position: center 55%"></div>
+          <div class="body">
+            <span class="meta">Embedded systems &middot; Team project</span>
+            <h3>MISHAP-D: High-Altitude Payload Delivery</h3>
+            <p>Laser-angle ground tracking, real-time drop simulation and a two-person arming interlock for a drone-mounted payload bay.</p>
+            <ul class="tags"><li>ESP32</li><li>LoRa telemetry</li><li>Laser-cut enclosure</li><li>3D printing</li></ul>
+            <span class="more">Read case study &rarr;</span>
+          </div>
+        </a>
+        <a class="project-card" href="projects/Auto%20Ball%20Balancer.html">
+          <div class="thumb"><img src="images/projectoverview/AUTO_BALL_BALANCER_BACKGROUND_IMAGE.jpg" alt="Two-degree-of-freedom ball balancing platform" loading="lazy"></div>
+          <div class="body">
+            <span class="meta">Controls &middot; Computer vision</span>
+            <h3>2-DoF Ball Balancer</h3>
+            <p>Camera-tracked tilting platform on a Raspberry Pi, stabilizing a ball in real time with PID control.</p>
+            <ul class="tags"><li>Raspberry Pi</li><li>PID control</li><li>Onshape CAD</li></ul>
+            <span class="more">Read case study &rarr;</span>
+          </div>
+        </a>
+        <a class="project-card" href="projects/Threaded%20Items%20Transfer%20System.html">
+          <div class="thumb contain"><img src="images/projectoverview/THREADED_ITEMS_TRANSFER_SYSTEM_BACKGROUND_IMAGE.png" alt="CAD render of a hopper-fed fastener sorting machine" loading="lazy"></div>
+          <div class="body">
+            <span class="meta">Mechanism design</span>
+            <h3>Threaded Items Transfer System</h3>
+            <p>Modular sorter that separates mixed nuts, bolts, lock nuts and washers into organized bins.</p>
+            <ul class="tags"><li>Onshape CAD</li><li>Servo actuation</li><li>Modular design</li></ul>
+            <span class="more">Read case study &rarr;</span>
+          </div>
+        </a>
+        <a class="project-card" href="projects/Delta%20Arm.html">
+          <div class="thumb"><img src="images/projectoverview/DELTA_ARM_BACKGROUND_IMAGE.png" alt="Delta robot arm" loading="lazy"></div>
+          <div class="body">
+            <span class="meta">Robotics &middot; Kinematics</span>
+            <h3>Delta Arm</h3>
+            <p>Three-arm parallel robot driven by inverse kinematics on an Arduino, with a post-mortem on actuator torque.</p>
+            <ul class="tags"><li>Arduino</li><li>Inverse kinematics</li><li>Stepper motors</li></ul>
+            <span class="more">Read case study &rarr;</span>
+          </div>
+        </a>
+      </div>
+    </section>
 
-        .top-nav a:hover {
-            background-color: #111;
-            color: #fff;
-        }
+    <section class="group">
+      <div class="group-title"><h2>Machine learning &amp; signal processing</h2><span>04</span></div>
+      <ul class="project-list">
+        <li><a href="projects/Connect%20Four%20AI.html">
+          <div><h3>Connect Four AI <span class="badge">Live demo</span></h3>
+            <p>Convolutional Deep-Q network trained through self-play with shaped rewards for threats, forks and center control.</p>
+            <ul class="tags"><li>PyTorch</li><li>Reinforcement learning</li><li>CNN</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="projects/Snake%20AI.html">
+          <div><h3>Snake AI <span class="badge">Live demo</span></h3>
+            <p>Deep-Q agent working from an 11-value state, backed by a flood-fill survival check.</p>
+            <ul class="tags"><li>PyTorch</li><li>Reinforcement learning</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="projects/Scrabble%20AI.html">
+          <div><h3>Scrabble AI <span class="badge">Live demo</span></h3>
+            <p>GADDAG move generator over the tournament word list, full cross-word scoring and a learned move-value network.</p>
+            <ul class="tags"><li>Python</li><li>Search</li><li>Neural networks</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="projects/DFT%20Bomb%20Finder.html">
+          <div><h3>DFT Bomb Finder <span class="badge">Live demo</span></h3>
+            <p>Discriminates explosions from earthquakes using the frequency content of a seismogram.</p>
+            <ul class="tags"><li>Python</li><li>Signal processing</li><li>FFT</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </section>
 
-        .default-browser {
-            background-color: #0b0b0b;
-            background-image: var(--projectoverview-default, none);
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-size: cover;
-            position: fixed;
-            inset: 0;
-            transition: filter 0.4s ease;
-            min-height: 100vh;
-            padding-top: 100px;
-        }
+    <section class="group">
+      <div class="group-title"><h2>Applications</h2><span>03</span></div>
+      <ul class="project-list">
+        <li><a href="projects/Bartending%20App.html">
+          <div><h3>BartendingApp</h3>
+            <p>Android cocktail reference with search, favorites, recipe translation, admin-curated bundles and reviews.</p>
+            <ul class="tags"><li>Java</li><li>Android</li><li>AdMob</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="projects/Bad%20Mobile%20Game.html">
+          <div><h3>Pathfinder Puzzle</h3>
+            <p>Offline sliding-tile puzzle for Android: rearrange numbered tiles to rebuild a winding path.</p>
+            <ul class="tags"><li>Kotlin</li><li>Jetpack Compose</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+        <li><a href="projects/Restaurant%20Scheduler.html">
+          <div><h3>Restaurant Scheduler</h3>
+            <p>Shift-scheduling tool with a Hapi API, JSON data store, fair-scheduling logic and owner controls.</p>
+            <ul class="tags"><li>Node.js</li><li>Hapi</li><li>REST API</li></ul></div>
+          <span class="arrow" aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </section>
+  </main>
 
-        h1 {
-            text-align: center;
-            margin-top: 0;
-            padding-top: 10px;
-            color: white;
-            text-shadow: 2px 2px 4px #000000;
-        }
-
-        .project-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .project-list li {
-            margin: 40px 20px;
-            text-align: left;
-        }
-
-        .project-list a {
-            text-decoration: none;
-            color: white;
-            padding: 10px 15px;
-            border: 2px solid white;
-            border-radius: 5px;
-            background-color: rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .project-list a:hover {
-            background-color: rgba(255, 255, 255, 0.5);
-            color: black;
-        }
-
-        body:has(.p1:hover) .default-browser {
-            background-image: var(--projectoverview-p1, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 80vh;
-        }
-
-        body:has(.p2:hover) .default-browser {
-            background-image: var(--projectoverview-p2, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-
-        body:has(.p3:hover) .default-browser {
-            background-image: var(--projectoverview-p3, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-
-        body:has(.p4:hover) .default-browser {
-            background-image: var(--projectoverview-p4, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-
-        body:has(.p5:hover) .default-browser {
-            background-image: var(--projectoverview-p5, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-
-        body:has(.p6:hover) .default-browser {
-            background-image: var(--projectoverview-p6, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-
-        body:has(.p7:hover) .default-browser {
-            background-image: var(--projectoverview-p7, none);
-            background-position: fixed;
-            background-size: cover;
-            min-height: 100vh;
-        }
-        </style>
-    </head>
-
-    <body>
-        <nav class="top-nav">
-            <a href="index.html">Home</a>
-            <a href="projectoverview.html">Projects</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-        <div class="default-browser">
-            <h1>Projects Table of Contents</h1>
-            <ul class="project-list">
-                <li><a class="p1" href="projects/Bad Mobile Game.html">Bad Mobile Game</a></li>
-                <li><a class="p2" href="projects/Bartending App.html">Bartending App</a></li>
-                <li><a class="p3" href="projects/Auto Ball Balancer.html">Auto Ball Balancer</a></li>
-                <li><a class="p4" href="projects/Delta Arm.html">Delta Arm</a></li>
-                <li><a class="p5" href="projects/Mishap D.html">Mishap D</a></li>
-                <li><a class="p6" href="projects/Restaurant Scheduler.html">Restaurant Scheduler</a></li>
-                <li><a class="p7" href="projects/Threaded Items Transfer System.html">Threaded Items Transfer System</a></li>
-                <li><a class="p8" href="projects/Connect Four AI.html">Connect Four AI &nbsp;&#9654; playable</a></li>
-                <li><a class="p9" href="projects/Snake AI.html">Snake AI &nbsp;&#9654; playable</a></li>
-                <li><a class="p10" href="projects/Scrabble AI.html">Scrabble AI &nbsp;&#9654; playable</a></li>
-                <li><a class="p11" href="projects/DFT Bomb Finder.html">DFT Bomb Finder &nbsp;&#9654; interactive</a></li>
-            </ul>
-        </div>
-        <script>
-            // Warm the cache for the hover backgrounds so they appear instantly instead of flashing blank on first hover.
-            window.addEventListener('load', () => {
-                const css = getComputedStyle(document.documentElement);
-                for (let i = 1; i <= 7; i++) {
-                    const m = css.getPropertyValue('--projectoverview-p' + i).match(/url\(["']?([^"')]+)/);
-                    if (m) new Image().src = m[1];
-                }
-            });
-        </script>
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>&copy; 2026 Graham Gilbert-Schroeer</span>
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contact</a>
+        <a href="https://github.com/VeganPorkChop" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </footer>
 </body>
+</html>

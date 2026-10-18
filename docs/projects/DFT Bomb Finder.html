@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DFT Bomb Finder</title>
+  <title>DFT Bomb Finder — Graham Gilbert-Schroeer</title>
   <style>
     :root{--bg:#ffffff;--text:#111827;--muted:#6b7280;--card:#e6ebef;--border:#c6cad2;--accent:#2563eb;--code-bg:#0b1020;--code-text:#e5e7eb;--max:980px;--radius:14px;}
     *{box-sizing:border-box;}
@@ -28,23 +28,35 @@
     .top-nav a:hover{background-color:#111;color:#fff;}
     .demo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:18px 0;}
   </style>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/site.css">
 </head>
-<body>
-  <a href="../index.html#gallery" class="back-to-gallery" style="position:fixed;right:16px;bottom:16px;z-index:3000;background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.35);font-family:system-ui,Arial,sans-serif;">&larr; Back to Gallery</a>
-  <nav class="top-nav">
-    <a href="#overview">Overview</a>
-    <a href="#demo">Try it</a>
-    <a href="#pipeline">Pipeline</a>
-    <a href="#features">The physics</a>
-    <a href="#notes">Notes</a>
-  </nav>
+<body class="doc">
+  <!-- site-chrome -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../index.html"><span class="brand-mark">GG</span><span class="brand-name">Graham Gilbert-Schroeer</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="../projectoverview.html" aria-current="page">Projects</a>
+        <a href="../index.html#about">About</a>
+        <a class="nav-cta" href="../contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
 
   <div class="container">
+    <a class="crumb" href="../projectoverview.html">&larr; All projects</a>
     <header>
       <h1>DFT Bomb Finder</h1>
       <p>Tell an explosion from an earthquake using nothing but a seismogram — the same signal-processing problem nuclear-test monitoring agencies solve, scaled down to run on a laptop.</p>
       <p class="lead"><a href="#demo">Simulate an event below</a> and watch the frequency analysis make the call.</p>
     </header>
+    <nav class="page-toc" aria-label="On this page"><span class="toc-label">On this page</span><a href="#overview">Overview</a><a href="#demo">Try it</a><a href="#pipeline">Pipeline</a><a href="#features">The physics</a><a href="#notes">Notes</a></nav>
+
 
     <section id="overview">
       <h2>Project Overview</h2>
@@ -116,5 +128,16 @@ P(explosion) = min(score, 1.0)</code></pre>
     import { mount } from './demos/bombfinder.js';
     mount(document.getElementById('demo-root'));
   </script>
+  <div class="doc-tail"><nav class="doc-next" aria-label="More projects"><a class="prev" href="Scrabble%20AI.html"><span class="dir">Previous</span><span class="name">Scrabble AI</span></a><a class="next" href="Bartending%20App.html"><span class="dir">Next</span><span class="name">BartendingApp</span></a></nav></div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>&copy; 2026 Graham Gilbert-Schroeer</span>
+      <nav aria-label="Footer">
+        <a href="../index.html">Home</a>
+        <a href="../projectoverview.html">Projects</a>
+        <a href="../contact.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>

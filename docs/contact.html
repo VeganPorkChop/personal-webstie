@@ -1,112 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Contact Me</title>
-    <link rel="stylesheet" href="site-images.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #1f1a2b;
-            background-image: var(--contact-background, none);
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-        }
-
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 12px 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        .top-nav a {
-            text-decoration: none;
-            color: #111;
-            font-size: 1rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #111;
-            border-radius: 999px;
-            padding: 6px 18px;
-            transition: all 0.3s ease;
-        }
-
-        .top-nav a:hover {
-            background-color: #111;
-            color: #fff;
-        }
-
-        .page-content {
-            padding-top: 100px;
-        }
-
-        .contact-card {
-            width: 290px;
-            border: 4px solid rgb(78, 42, 132);
-            border-radius: 15px;
-            background-color: rgba(182, 172, 209, 0.8);
-            padding: 5px 15px;
-            margin: 20px 10px;
-        }
-
-        .contact-card h1 {
-            color: rgb(78, 42, 132);
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        .contact-card p {
-            text-align: left;
-            color: rgb(78, 42, 132);
-            margin: 18px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .contact-card a {
-            text-decoration: none;
-            color: rgb(0, 0, 0);
-            font-size: .7rem;
-            padding: 8px 10px;
-            border: 2px solid rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            background-color: rgba(147, 128, 182, 0.8);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .contact-card a:hover {
-            background-color: rgb(182, 172, 209);
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Graham Gilbert-Schroeer</title>
+  <meta name="description" content="Get in touch with Graham Gilbert-Schroeer, mechanical engineering student at Northwestern University.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
 </head>
-
 <body>
-    <nav class="top-nav">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="brand-mark">GG</span><span class="brand-name">Graham Gilbert-Schroeer</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="projectoverview.html">Projects</a>
+        <a href="index.html#about">About</a>
+        <a class="nav-cta" href="contact.html" aria-current="page">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <p class="eyebrow">Contact</p>
+      <h1>Get in touch</h1>
+      <p>I'm interested in internships, research positions and engineering projects. Email is the fastest way to reach me.</p>
+    </div>
+
+    <div class="contact-grid" style="padding-bottom:96px">
+      <a class="contact-card" href="mailto:grahamgilbert-schroeer2029@u.northwestern.edu">
+        <p class="label">Email</p>
+        <p class="value">grahamgilbert-schroeer2029@u.northwestern.edu</p>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/graham-gilbert-schroeer-8003363a4" target="_blank" rel="noopener noreferrer">
+        <p class="label">LinkedIn</p>
+        <p class="value">in/graham-gilbert-schroeer</p>
+      </a>
+      <a class="contact-card" href="https://github.com/VeganPorkChop" target="_blank" rel="noopener noreferrer">
+        <p class="label">GitHub</p>
+        <p class="value">github.com/VeganPorkChop</p>
+      </a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>&copy; 2026 Graham Gilbert-Schroeer</span>
+      <nav aria-label="Footer">
         <a href="index.html">Home</a>
         <a href="projectoverview.html">Projects</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-    <div class="page-content">
-        <div class="contact-card">
-            <h1>Contact Me</h1>
-            <p>Email: <br><a href="mailto:grahamgilbert-schroeer2029@u.northwestern.edu">grahamgilbert-schroeer2029@u.northwestern.edu</a></p>
-            <p>LinkedIn: <br><a href="www.linkedin.com/in/graham-gilbert-schroeer-8003363a4">www.linkedin.com/in/graham-gilbert-schroeer</a></p>
-            <p>GitHub: <br><a href="https://github.com/VeganPorkChop">github.com/VeganPorkChop</a></p>
-            <p>Phone: <br><a href="tel:(434) 305-8161">(434) 305-8161</a></p>
-        </div>
+        <a href="https://github.com/VeganPorkChop" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
     </div>
+  </footer>
 </body>
+</html>
